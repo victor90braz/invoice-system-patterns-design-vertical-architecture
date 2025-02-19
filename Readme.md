@@ -1,25 +1,31 @@
-
 ```markdown
 # InvoiceSystem
 
-InvoiceSystem es un sistema de ejemplo desarrollado con Django que implementa una **arquitectura vertical** y utiliza diversos **patrones de diseño** (Strategy, Factory, State, Observer y Chain of Responsibility) para gestionar:
+**InvoiceSystem** es un sistema desarrollado con **Django**.  
+Implementa una **arquitectura vertical** y usa varios **patrones de diseño**:  
+Estrategia, Fábrica, Estado, Observador y Cadena de Responsabilidad.
 
-- **Generación de asientos contables** (diferentes tipos de facturas: compras, gastos, inversiones)
-- **Estados de factura** (borrador, contabilizada, pagada, anulada)
-- **Notificaciones** (Observer / Pub-Sub)
-- **Cálculo de impuestos** (Strategy o Chain of Responsibility)
+El sistema gestiona:
 
-El sistema está orientado a satisfacer las necesidades de empresas como **Mercadona** y **Airbnb**, permitiendo personalizar las reglas de negocio según cada cliente.
+- **Generación de asientos contables**: (tipos de factura: compras, gastos, inversiones).
+- **Estados de facturas**: (borrador, publicado, pagado, cancelado).
+- **Notificaciones**: (Observador / Pub-Sub).
+- **Cálculo de impuestos**: (Estrategia o Cadena de Responsabilidad).
+
+Diseñado para empresas como **Mercadona** y **Airbnb**,  
+el sistema permite personalizar reglas de negocio.
 
 ## Características
 
-- **Arquitectura Vertical:** Organización del código por funcionalidades: `invoices`, `accounting`, `notifications`, `taxes` y `common`.
-- **Patrones de Diseño:**
-  - **Strategy + Factory:** Para la generación de asientos contables.
-  - **State:** Para la gestión del ciclo de vida de las facturas.
-  - **Observer:** Para la gestión de notificaciones ante eventos importantes.
-  - **Strategy / Chain of Responsibility:** Para el cálculo de impuestos.
-- **Modularidad y Escalabilidad:** Fácil incorporación de nuevas funcionalidades o adaptaciones a diferentes empresas sin modificar la base del sistema.
+- **Arquitectura Vertical**: Organización del código por funcionalidades:  
+  `invoices`, `accounting`, `notifications`, `taxes` y `common`.
+- **Patrones de Diseño**:
+  - **Estrategia + Fábrica**: Para generar asientos contables.
+  - **Estado**: Para gestionar el ciclo de vida de las facturas.
+  - **Observador**: Para manejar notificaciones de eventos importantes.
+  - **Estrategia / Cadena de Responsabilidad**: Para cálculos de impuestos.
+- **Modularidad y Escalabilidad**:  
+  Fácil integración de nuevas funcionalidades.
 
 ## Requisitos
 
@@ -31,7 +37,7 @@ El sistema está orientado a satisfacer las necesidades de empresas como **Merca
 
 1. **Clonar el repositorio:**
    ```bash
-   git clone <https://github.com/victor90braz/invoice-system-patterns-design-vertical-architecture.git>
+   git clone https://github.com/victor90braz/invoice-system-patterns-design-vertical-architecture.git
    cd InvoiceSystem
    ```
 
@@ -44,23 +50,23 @@ El sistema está orientado a satisfacer las necesidades de empresas como **Merca
    source venv/bin/activate
    ```
 
-3. **Instalar las dependencias:**
+3. **Instalar dependencias:**
    ```bash
    pip install -r requirements.txt
    ```
 
-4. **Realizar las migraciones:**
+4. **Ejecutar migraciones:**
    ```bash
    python manage.py makemigrations
    python manage.py migrate
    ```
 
-5. **Crear un superusuario (opcional, para acceder al panel de administración):**
+5. **Crear un superusuario (opcional):**
    ```bash
    python manage.py createsuperuser
    ```
 
-6. **Levantar el servidor de desarrollo:**
+6. **Iniciar el servidor de desarrollo:**
    ```bash
    python manage.py runserver
    ```
@@ -70,99 +76,68 @@ El sistema está orientado a satisfacer las necesidades de empresas como **Merca
 ```plaintext
 InvoiceSystem/
 │
-├── invoices/                      # Escenario 2: Estados de Factura (State)
-│   ├── controllers/               # Controladores para la gestión de facturas
-│   │   └── invoice_controller.py
-│   ├── models/                    # Modelo de Factura
-│   │   └── invoice.py
-│   ├── states/                    # Implementación del patrón State
-│   │   ├── base_invoice_state.py
-│   │   ├── draft_state.py
-│   │   ├── posted_state.py
-│   │   ├── paid_state.py
-│   │   └── canceled_state.py
+├── invoices/                      # Facturas (Patrón Estado)
+│   ├── controllers/               # Controladores de facturas
+│   ├── models/                    # Modelo de factura
+│   ├── states/                    # Implementación del patrón Estado
 │   ├── services/                  # Lógica de negocio de facturas
-│   │   └── invoice_service.py
-│   ├── dtos/                      # DTOs para la facturación
-│   │   └── invoice_dto.py
-│   ├── enums/                     # Enumeraciones de estados de factura
-│   │   └── invoice_status_enum.py
+│   ├── dtos/                      # DTOs de facturas
+│   ├── enums/                     # Enums de estados
 │   └── utils/                     # Utilidades y validaciones
-│       └── invoice_validations.py
 │
-├── accounting/                    # Escenario 1: Generación de Asientos (Strategy + Factory)
-│   ├── controllers/               # Controladores de contabilidad
-│   │   └── accounting_controller.py
-│   ├── services/                  # Lógica de negocio para asientos contables
-│   │   └── accounting_service.py
-│   ├── strategies/                # Estrategias para contabilización
-│   │   ├── base.py
-│   │   ├── mercadona_purchase_strategy.py
-│   │   ├── mercadona_expense_strategy.py
-│   │   ├── mercadona_investment_strategy.py
-│   │   ├── airbnb_purchase_strategy.py
-│   │   ├── airbnb_expense_strategy.py
-│   │   └── airbnb_investment_strategy.py
-│   ├── factories/                 # Fábricas para obtener la estrategia adecuada
-│   │   └── accounting_strategy_factory.py
-│   ├── dtos/                      # DTO para asientos contables
-│   │   └── accounting_entry_dto.py
-│   ├── enums/                     # Enumeraciones para cuentas y asientos
-│   │   └── accounting_enums.py
-│   └── models/                    # Modelo de Asiento Contable
-│       └── accounting_entry.py
+├── accounting/                    # Asientos contables (Estrategia + Fábrica)
+│   ├── controllers/               # Controladores contables
+│   ├── services/                  # Lógica de negocio de asientos
+│   ├── strategies/                # Estrategias contables
+│   │   ├── mercadona_purchase_strategy.py  # Estrategia de compras Mercadona
+│   │   ├── mercadona_expense_strategy.py    # Estrategia de gastos Mercadona
+│   │   ├── mercadona_investment_strategy.py # Estrategia de inversiones Mercadona
+│   │   ├── airbnb_purchase_strategy.py     # Estrategia de compras Airbnb
+│   │   ├── airbnb_expense_strategy.py      # Estrategia de gastos Airbnb
+│   │   └── airbnb_investment_strategy.py  # Estrategia de inversiones Airbnb
+│   ├── factories/                 # Fábricas de estrategias contables
+│   ├── dtos/                      # DTOs de asientos contables
+│   ├── enums/                     # Enums contables
+│   └── models/                    # Modelo de asiento contable
 │
-├── notifications/                # Escenario 3: Notificaciones (Observer)
-│   ├── controllers/               # Controladores para notificaciones
-│   │   └── notification_controller.py
-│   ├── observers/                 # Observadores (Observer Pattern)
-│   │   ├── base_observer.py
-│   │   ├── user_notification_observer.py
-│   │   ├── accounting_observer.py
-│   │   └── balance_observer.py
+├── notifications/                # Notificaciones (Patrón Observador)
+│   ├── controllers/               # Controladores de notificaciones
+│   ├── observers/                 # Observadores
 │   ├── services/                  # Servicio de notificaciones
-│   │   └── notification_service.py
-│   ├── dtos/                      # DTOs para notificaciones
-│   │   └── notification_dto.py
-│   └── enums/                     # Enumeraciones de notificación
-│       └── notification_enums.py
+│   ├── dtos/                      # DTOs de notificaciones
+│   └── enums/                     # Enums de notificaciones
 │
-├── taxes/                         # Escenario 4: Cálculo de Impuestos (Strategy o Chain of Responsibility)
-│   ├── controllers/               # Controladores para impuestos
-│   │   └── tax_controller.py
+├── taxes/                         # Cálculo de impuestos (Estrategia o Cadena de Responsabilidad)
+│   ├── controllers/               # Controladores de impuestos
 │   ├── services/                  # Lógica de impuestos
-│   │   └── tax_service.py
-│   ├── strategies/                # Estrategias para el cálculo de impuestos
-│   │   ├── base_tax.py
-│   │   ├── mercadona_tax_strategy.py
-│   │   ├── airbnb_tax_strategy.py
-│   │   └── special_tax_strategy.py
-│   ├── dtos/                      # DTOs para impuestos
-│   │   └── tax_dto.py
-│   └── enums/                     # Enumeraciones para tipos de impuestos
-│       └── tax_type_enum.py
+│   ├── strategies/                # Estrategias de impuestos
+│   │   ├── mercadona_tax_strategy.py  # Estrategia de impuestos Mercadona
+│   │   ├── airbnb_tax_strategy.py     # Estrategia de impuestos Airbnb
+│   │   └── special_tax_strategy.py   # Estrategia de impuestos especial
+│   ├── dtos/                      # DTOs de impuestos
+│   └── enums/                     # Enums de impuestos
 │
-├── common/                        # Componentes y utilidades comunes
-│   ├── utils/                     # Funciones genéricas (ej. manejo de fechas)
-│   │   └── date_utils.py
+├── common/                        # Componentes comunes
+│   ├── utils/                     # Funciones generales (ej. manejo de fechas)
 │   ├── dtos/                      # DTOs comunes
-│   │   └── base_response_dto.py
-│   └── enums/                     # Enumeraciones generales
-│       └── common_enums.py
+│   └── enums/                     # Enums generales
 │
 └── config/                        # Configuración del proyecto
-    ├── settings.py                # Configuraciones globales
-    ├── routes.py                  # Definición de rutas/urls
-    └── wsgi.py                    # Configuración WSGI para el despliegue
+    ├── settings.py                # Ajustes globales
+    ├── routes.py                  # Definiciones de rutas
+    └── wsgi.py                    # Configuración WSGI para despliegue
 ```
 
 ## Uso
 
-- **Panel de Administración:**  
-  Accede a `http://127.0.0.1:8000/admin/` (asegúrate de crear un superusuario).
+- **Panel de administración:**  
+  Accede en `http://127.0.0.1:8000/admin/` (debes crear un superusuario).
 
-- **Endpoints de la API:**  
+- **Puntos finales API:**  
   - **Facturas:** `http://127.0.0.1:8000/invoices/`
   - **Contabilidad:** `http://127.0.0.1:8000/accounting/`
   - **Notificaciones:** `http://127.0.0.1:8000/notifications/`
   - **Impuestos:** `http://127.0.0.1:8000/taxes/`
+
+```
+
