@@ -6,12 +6,18 @@ class CombinedTaxStrategy(BaseTaxStrategy):
         self.strategies = strategies  # List of strategies
 
     def calculate_tax(self, invoice):
-        # Adjust the tax calculation based on specific rules.
+        # Apply the combined tax logic based on the product type and invoice data
         if invoice.product_type == "food":
-            # If the product type is food, only apply the reduced tax rate.
-            return self.strategies[1].calculate_tax(invoice)  # Apply only the reduced tax
+            return self.calculate_reduced_tax(invoice)
 
-        # Otherwise, sum both taxes for other cases
+        return self.calculate_combined_tax(invoice)
+
+    def calculate_reduced_tax(self, invoice):
+        # Apply only the reduced tax strategy
+        return self.strategies[1].calculate_tax(invoice)  # Assuming reduced tax is the second strategy
+
+    def calculate_combined_tax(self, invoice):
+        # Apply the combined tax of both strategies
         total_tax = 0
         for strategy in self.strategies:
             total_tax += strategy.calculate_tax(invoice)
