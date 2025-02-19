@@ -1,6 +1,8 @@
 from django.test import TestCase
+
+from InvoiceSystem.taxes.factories.tax_strategy_factory import TaxStrategyFactory
 from InvoiceSystem.taxes.models.invoice import Invoice
-from taxes.factories.tax_strategy_factory import TaxStrategyFactory
+
 
 class TaxCalculationTest(TestCase):
     def test_standard_tax(self):
