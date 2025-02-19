@@ -29,9 +29,7 @@ el sistema permite personalizar reglas de negocio.
 
 ## Requisitos
 
-- Python 3.x
-- Django 3.x o superior
-- pip
+- requirements.txt
 
 ## Instalación
 
@@ -50,23 +48,23 @@ el sistema permite personalizar reglas de negocio.
    source venv/bin/activate
    ```
 
-3. **Instalar dependencias:**
+3. **Ejecutar el script `setup-windows.bat` (solo en Windows):**
    ```bash
-   pip install -r requirements.txt
+   ./setup-windows.bat
    ```
 
-4. **Ejecutar migraciones:**
+5. **Ejecutar migraciones:**
    ```bash
    python manage.py makemigrations
    python manage.py migrate
    ```
 
-5. **Crear un superusuario (opcional):**
+6. **Crear un superusuario (opcional):**
    ```bash
    python manage.py createsuperuser
    ```
 
-6. **Iniciar el servidor de desarrollo:**
+7. **Iniciar el servidor de desarrollo:**
    ```bash
    python manage.py runserver
    ```
@@ -138,6 +136,5 @@ InvoiceSystem/
   - **Contabilidad:** `http://127.0.0.1:8000/accounting/`
   - **Notificaciones:** `http://127.0.0.1:8000/notifications/`
   - **Impuestos:** `http://127.0.0.1:8000/taxes/`
-
 ```
 
