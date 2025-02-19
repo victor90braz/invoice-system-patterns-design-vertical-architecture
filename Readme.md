@@ -1,7 +1,7 @@
 ```markdown
 # InvoiceSystem
 
-**InvoiceSystem** es un sistema desarrollado con **Django**.  
+**InvoiceSystem** es un sistema de facturación desarrollado con **Django**.  
 Implementa una **arquitectura vertical** y usa varios **patrones de diseño**:  
 Estrategia, Fábrica, Estado, Observador y Cadena de Responsabilidad.
 
@@ -18,7 +18,7 @@ el sistema permite personalizar reglas de negocio.
 ## Características
 
 - **Arquitectura Vertical**: Organización del código por funcionalidades:  
-  `invoices`, `accounting`, `notifications`, `taxes` y `common`.
+  `invoices`, `accounting`, `notifications`, `taxes`, y `common`.
 - **Patrones de Diseño**:
   - **Estrategia + Fábrica**: Para generar asientos contables.
   - **Estado**: Para gestionar el ciclo de vida de las facturas.
@@ -29,45 +29,84 @@ el sistema permite personalizar reglas de negocio.
 
 ## Requisitos
 
-- requirements.txt
+- Python 3.8 o superior
+- MySQL
+- `requirements.txt`
 
 ## Instalación
 
-1. **Clonar el repositorio:**
-   ```bash
-   git clone https://github.com/victor90braz/invoice-system-patterns-design-vertical-architecture.git
-   cd InvoiceSystem
-   ```
+### 1. Clonar el repositorio:
 
-2. **Crear y activar un entorno virtual:**
-   ```bash
-   python -m venv venv
-   # En Windows:
-   venv\Scripts\activate
-   # En macOS/Linux:
-   source venv/bin/activate
-   ```
+```bash
+git clone https://github.com/victor90braz/invoice-system-patterns-design-vertical-architecture.git
+cd InvoiceSystem
+```
 
-3. **Ejecutar el script `setup-windows.bat` (solo en Windows):**
-   ```bash
-   ./setup-windows.bat
-   ```
+### 2. Crear y activar un entorno virtual:
 
-5. **Ejecutar migraciones:**
-   ```bash
-   python manage.py makemigrations
-   python manage.py migrate
-   ```
+```bash
+python -m venv venv
+# En Windows:
+venv\Scripts\activate
+# En macOS/Linux:
+source venv/bin/activate
+```
 
-6. **Crear un superusuario (opcional):**
-   ```bash
-   python manage.py createsuperuser
-   ```
+### 3. Ejecutar el script `setup-windows.bat` (solo en Windows):
 
-7. **Iniciar el servidor de desarrollo:**
-   ```bash
-   python manage.py runserver
-   ```
+```bash
+./setup-windows.bat
+```
+
+### 4. Configuración de entorno:
+
+Crea un archivo `.env` en la raíz del proyecto y agrega las siguientes variables de entorno:
+
+```env
+DB_NAME=invoice_system_db
+DB_USER=root
+DB_PASSWORD=root
+DB_HOST=127.0.0.1
+DB_PORT=3306
+SECRET_KEY=your-secret-key
+DEBUG=True
+ALLOWED_HOSTS=127.0.0.1,localhost
+```
+
+### 6. Instalar dependencias:
+
+```bash
+pip install -r requirements.txt
+pip install mysqlclient
+```
+
+### 7. Crear base de datos en MySQL:
+
+Accede a MySQL y crea la base de datos:
+
+```bash
+mysql -u root -p
+CREATE DATABASE InvoiceSystem;
+```
+
+### 8. Ejecutar migraciones:
+
+```bash
+python manage.py makemigrations
+python manage.py migrate
+```
+
+### 9. Crear un superusuario (opcional):
+
+```bash
+python manage.py createsuperuser
+```
+
+### 10. Iniciar el servidor de desarrollo:
+
+```bash
+python manage.py runserver
+```
 
 ## Estructura del Proyecto
 
@@ -118,23 +157,5 @@ InvoiceSystem/
 ├── common/                        # Componentes comunes
 │   ├── utils/                     # Funciones generales (ej. manejo de fechas)
 │   ├── dtos/                      # DTOs comunes
-│   └── enums/                     # Enums generales
-│
-└── config/                        # Configuración del proyecto
-    ├── settings.py                # Ajustes globales
-    ├── routes.py                  # Definiciones de rutas
-    └── wsgi.py                    # Configuración WSGI para despliegue
+│   └── enums/                     # Enums comunes
 ```
-
-## Uso
-
-- **Panel de administración:**  
-  Accede en `http://127.0.0.1:8000/admin/` (debes crear un superusuario).
-
-- **Puntos finales API:**  
-  - **Facturas:** `http://127.0.0.1:8000/invoices/`
-  - **Contabilidad:** `http://127.0.0.1:8000/accounting/`
-  - **Notificaciones:** `http://127.0.0.1:8000/notifications/`
-  - **Impuestos:** `http://127.0.0.1:8000/taxes/`
-```
-
