@@ -3,7 +3,7 @@ from InvoiceSystem.app.modules.invoices.accounting_entries.strategies.types.expe
 from InvoiceSystem.app.modules.invoices.accounting_entries.strategies.types.investment_strategy import InvestmentStrategy
 from InvoiceSystem.models import Invoice  
 
-class AccountingStrategyHelper:
+class AccountingEntriesStrategyDriver:
     @staticmethod
     def get_strategy(invoice: Invoice):
         """
