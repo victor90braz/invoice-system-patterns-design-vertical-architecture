@@ -6,12 +6,7 @@ from InvoiceSystem.models import Invoice
 
 
 def get_accounting_strategy(invoice: Invoice) -> BaseInvoiceAccountingEntriesInterface:
-    """
-    Returns the appropriate accounting entry strategy based on the invoice type.
-    
-    :param invoice: The invoice object
-    :return: The selected accounting entry strategy
-    """
+
     match invoice.invoice_type:
         case "purchase":
             return PurchaseStrategy()
