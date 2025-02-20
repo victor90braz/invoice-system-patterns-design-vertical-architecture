@@ -111,57 +111,5 @@ python manage.py runserver
 ### 11. Ejecutar testings
 
 ```bash
-python manage.py test InvoiceSystem.tests.unit.taxes.test_tax_calculation
-```
-
-## Estructura del Proyecto
-
-```plaintext
-InvoiceSystem/
-│
-├── invoices/                      # Facturas (Patrón Estado)
-│   ├── controllers/               # Controladores de facturas
-│   ├── models/                    # Modelo de factura
-│   ├── states/                    # Implementación del patrón Estado
-│   ├── services/                  # Lógica de negocio de facturas
-│   ├── dtos/                      # DTOs de facturas
-│   ├── enums/                     # Enums de estados
-│   └── utils/                     # Utilidades y validaciones
-│
-├── accounting/                    # Asientos contables (Estrategia + Fábrica)
-│   ├── controllers/               # Controladores contables
-│   ├── services/                  # Lógica de negocio de asientos
-│   ├── strategies/                # Estrategias contables
-│   │   ├── mercadona_purchase_strategy.py  # Estrategia de compras Mercadona
-│   │   ├── mercadona_expense_strategy.py    # Estrategia de gastos Mercadona
-│   │   ├── mercadona_investment_strategy.py # Estrategia de inversiones Mercadona
-│   │   ├── airbnb_purchase_strategy.py     # Estrategia de compras Airbnb
-│   │   ├── airbnb_expense_strategy.py      # Estrategia de gastos Airbnb
-│   │   └── airbnb_investment_strategy.py  # Estrategia de inversiones Airbnb
-│   ├── factories/                 # Fábricas de estrategias contables
-│   ├── dtos/                      # DTOs de asientos contables
-│   ├── enums/                     # Enums contables
-│   └── models/                    # Modelo de asiento contable
-│
-├── notifications/                # Notificaciones (Patrón Observador)
-│   ├── controllers/               # Controladores de notificaciones
-│   ├── observers/                 # Observadores
-│   ├── services/                  # Servicio de notificaciones
-│   ├── dtos/                      # DTOs de notificaciones
-│   └── enums/                     # Enums de notificaciones
-│
-├── taxes/                         # Cálculo de impuestos (Estrategia o Cadena de Responsabilidad)
-│   ├── controllers/               # Controladores de impuestos
-│   ├── services/                  # Lógica de impuestos
-│   ├── strategies/                # Estrategias de impuestos
-│   │   ├── mercadona_tax_strategy.py  # Estrategia de impuestos Mercadona
-│   │   ├── airbnb_tax_strategy.py     # Estrategia de impuestos Airbnb
-│   │   └── special_tax_strategy.py   # Estrategia de impuestos especial
-│   ├── dtos/                      # DTOs de impuestos
-│   └── enums/                     # Enums de impuestos
-│
-├── common/                        # Componentes comunes
-│   ├── utils/                     # Funciones generales (ej. manejo de fechas)
-│   ├── dtos/                      # DTOs comunes
-│   └── enums/                     # Enums comunes
+python manage.py test InvoiceSystem.tests.unit.accounting.test_accounting_strategies
 ```

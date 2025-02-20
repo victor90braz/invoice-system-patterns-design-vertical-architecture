@@ -14,38 +14,7 @@ El patrón Estrategia permite encapsular diferentes algoritmos (reglas de contab
 
 ### 3. Implementación
 
-```python
-from abc import ABC, abstractmethod
 
-class AccountingEntryStrategy(ABC):
-    @abstractmethod
-    def generate_entry(self, invoice):
-        pass
-
-class PurchaseStrategy(AccountingEntryStrategy):
-    def generate_entry(self, invoice):
-        return {
-            "account": "6000 - Compras",
-            "amount": invoice.total_value,
-            "description": f"Compra - Factura {invoice.invoice_number}"
-        }
-
-class ExpenseStrategy(AccountingEntryStrategy):
-    def generate_entry(self, invoice):
-        return {
-            "account": "7000 - Gastos",
-            "amount": invoice.total_value,
-            "description": f"Gasto - Factura {invoice.invoice_number}"
-        }
-
-class InvestmentStrategy(AccountingEntryStrategy):
-    def generate_entry(self, invoice):
-        return {
-            "account": "8000 - Inversiones",
-            "amount": invoice.total_value,
-            "description": f"Inversión - Factura {invoice.invoice_number}"
-        }
-```
 
 ### 4. Ventajas
 - **Extensibilidad:** Fácil adición de nuevos tipos de facturas.
