@@ -10,11 +10,11 @@ class AccountingEntriesDriver:
     def get_strategy(invoice: Invoice):
 
         match invoice.invoice_type:
-            case InvoiceType.PURCHASE:
+            case InvoiceType.PURCHASE_INVOICE:
                 return PurchaseStrategy()
-            case InvoiceType.EXPENSE:
+            case InvoiceType.EXPENSE_INVOICE:
                 return ExpenseStrategy()
-            case InvoiceType.INVESTMENT:
+            case InvoiceType.INVESTMENT_INVOICE:
                 return InvestmentStrategy()
             case _:
                 raise ValueError(f"Unsupported invoice type: {invoice.invoice_type}")

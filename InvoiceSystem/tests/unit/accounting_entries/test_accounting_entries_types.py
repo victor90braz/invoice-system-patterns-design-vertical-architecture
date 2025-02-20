@@ -8,10 +8,9 @@ from InvoiceSystem.app.modules.invoices.models.invoice_type import InvoiceType
 
 class TestAccountingStrategies(TestCase):
 
-    def test_purchase_invoice_accounting_entry(self):
-        
+    def test_purchase_invoice_generates_purchase_entry(self):
         # Arrange
-        invoice = InvoiceFactory.add_invoice_type(invoice_type=InvoiceType.PURCHASE, invoice_number="003", total_value=500.0)
+        invoice = InvoiceFactory.add_invoice_type(invoice_type=InvoiceType.PURCHASE_INVOICE, invoice_number="003", total_value=500.0)
 
         # Act
         strategy = AccountingEntriesDriver.get_strategy(invoice)
@@ -23,10 +22,9 @@ class TestAccountingStrategies(TestCase):
         self.assertEqual(entry["amount"], invoice.total_value)  
         self.assertEqual(entry["description"], f"Generated type: {invoice.invoice_type}, Invoice Number - {invoice.invoice_number}")
 
-    def test_expense_invoice_accounting_entry(self):
-
+    def test_expense_invoice_generates_expense_entry(self):
         # Arrange
-        invoice = InvoiceFactory.add_invoice_type(invoice_type=InvoiceType.EXPENSE, invoice_number="002", total_value=300.0)
+        invoice = InvoiceFactory.add_invoice_type(invoice_type=InvoiceType.EXPENSE_INVOICE, invoice_number="002", total_value=300.0)
         
         # Act
         strategy = AccountingEntriesDriver.get_strategy(invoice)
@@ -38,10 +36,9 @@ class TestAccountingStrategies(TestCase):
         self.assertEqual(result["amount"], invoice.total_value)  
         self.assertEqual(result["description"], f"Generated type: {invoice.invoice_type}, Invoice Number - {invoice.invoice_number}")    
 
-    def test_investment_invoice_accounting_entry(self):
-
+    def test_investment_invoice_generates_investment_entry(self):
         # Arrange
-        invoice = InvoiceFactory.add_invoice_type(invoice_type=InvoiceType.INVESTMENT, invoice_number="004", total_value=1500.0)
+        invoice = InvoiceFactory.add_invoice_type(invoice_type=InvoiceType.INVESTMENT_INVOICE, invoice_number="004", total_value=1500.0)
 
         # Act
         strategy = AccountingEntriesDriver.get_strategy(invoice)
@@ -53,8 +50,7 @@ class TestAccountingStrategies(TestCase):
         self.assertEqual(entry["amount"], invoice.total_value)  
         self.assertEqual(entry["description"], f"Generated type: {invoice.invoice_type}, Invoice Number - {invoice.invoice_number}")  
 
-    def test_invalid_invoice_type(self):
-        
+    def test_unsupported_invoice_type_raises_error(self):
         # Arrange
         invoice = InvoiceFactory.create(
             invoice_number="005", 

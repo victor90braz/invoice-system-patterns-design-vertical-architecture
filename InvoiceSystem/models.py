@@ -8,7 +8,7 @@ class Invoice(models.Model):
     invoice_type = models.CharField(
         max_length=20,
         choices=InvoiceType.choices,  
-        default=InvoiceType.PURCHASE,  
+        default=InvoiceType.PURCHASE_INVOICE,  
     )
     customer_name = models.CharField(max_length=255)
     customer_id = models.IntegerField()

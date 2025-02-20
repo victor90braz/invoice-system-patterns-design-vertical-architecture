@@ -8,7 +8,7 @@ class InvoiceFactory(factory.django.DjangoModelFactory):
     
     invoice_number = factory.Faker('random_number')
     total_value = factory.Faker('random_number', max_digits=5)
-    invoice_type = InvoiceType.EXPENSE.value  
+    invoice_type = InvoiceType.EXPENSE_INVOICE.value   
     customer_name = factory.Faker('company')
     customer_id = factory.Faker('random_int')
 
