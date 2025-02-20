@@ -12,16 +12,16 @@ class InvoiceFactory(factory.django.DjangoModelFactory):
     customer_id = factory.Faker('random_int')
 
     @classmethod
-    def create_expense(cls, **kwargs):
-        """Create a 'expense' type invoice."""
+    def define_as_expense_invoice(cls, **kwargs):
+        """Define the invoice type as 'expense'."""
         return cls.create(invoice_type='expense', **kwargs)
 
     @classmethod
-    def create_purchase(cls, **kwargs):
-        """Create a 'purchase' type invoice."""
+    def define_as_purchase_invoice(cls, **kwargs):
+        """Define the invoice type as 'purchase'."""
         return cls.create(invoice_type='purchase', **kwargs)
 
     @classmethod
-    def create_investment(cls, **kwargs):
-        """Create an 'investment' type invoice."""
+    def define_as_investment_invoice(cls, **kwargs):
+        """Define the invoice type as 'investment'."""
         return cls.create(invoice_type='investment', **kwargs)
