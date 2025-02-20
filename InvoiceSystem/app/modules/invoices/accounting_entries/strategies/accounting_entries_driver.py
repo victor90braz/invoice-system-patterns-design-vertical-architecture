@@ -4,6 +4,7 @@ from InvoiceSystem.app.modules.invoices.accounting_entries.strategies.types.inve
 from InvoiceSystem.models import Invoice  
 
 class AccountingEntriesDriver:
+    
     @staticmethod
     def get_strategy(invoice: Invoice):
 
