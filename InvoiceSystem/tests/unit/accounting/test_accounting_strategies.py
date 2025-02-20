@@ -3,7 +3,7 @@ from InvoiceSystem.app.modules.invoices.accounting_entries.strategies.types.expe
 from InvoiceSystem.app.modules.invoices.accounting_entries.strategies.types.purchase_strategy import PurchaseStrategy
 from InvoiceSystem.app.modules.invoices.accounting_entries.strategies.types.investment_strategy import InvestmentStrategy
 from InvoiceSystem.database.factories.invoice_factory import InvoiceFactory
-from InvoiceSystem.app.modules.invoices.accounting_entries.strategies.accounting_entries_strategy_driver import AccountingEntriesStrategyDriver
+from InvoiceSystem.app.modules.invoices.accounting_entries.strategies.accounting_entries_driver import AccountingEntriesDriver
 
 class TestAccountingStrategies(TestCase):
 
@@ -16,7 +16,7 @@ class TestAccountingStrategies(TestCase):
         )
         
         # Act
-        strategy = AccountingEntriesStrategyDriver.get_strategy(invoice)
+        strategy = AccountingEntriesDriver.get_strategy(invoice)
         result = strategy.generate_entry(invoice)
 
         # Assert
@@ -31,7 +31,7 @@ class TestAccountingStrategies(TestCase):
         invoice = InvoiceFactory.create_purchase(invoice_number="003", total_value=500.0)
 
         # Act
-        strategy = AccountingEntriesStrategyDriver.get_strategy(invoice)
+        strategy = AccountingEntriesDriver.get_strategy(invoice)
         entry = strategy.generate_entry(invoice)
 
         # Assert
@@ -46,7 +46,7 @@ class TestAccountingStrategies(TestCase):
         invoice = InvoiceFactory.create_investment(invoice_number="004", total_value=1500.0)
 
         # Act
-        strategy = AccountingEntriesStrategyDriver.get_strategy(invoice)
+        strategy = AccountingEntriesDriver.get_strategy(invoice)
         entry = strategy.generate_entry(invoice)
 
         # Assert
@@ -68,4 +68,4 @@ class TestAccountingStrategies(TestCase):
 
         # Act & Assert
         with self.assertRaises(ValueError):
-            AccountingEntriesStrategyDriver.get_strategy(invoice)
+            AccountingEntriesDriver.get_strategy(invoice)
