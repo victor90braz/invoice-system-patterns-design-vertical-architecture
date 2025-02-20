@@ -113,3 +113,19 @@ python manage.py runserver
 ```bash
 python manage.py test InvoiceSystem.tests.unit.accounting.test_accounting_strategies
 ```
+
+### 12. Generating Test Coverage Report in HTML
+
+Install the `coverage` package if it's not already installed:
+
+   ```bash
+   pip install coverage
+   ```
+
+Run the tests with coverage:
+
+   ```bash
+coverage run manage.py test inmaticParte3Debugging.tests.service.accounting_invoice_service_test
+coverage report
+coverage html
+   ```
