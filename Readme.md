@@ -108,6 +108,12 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
+### 11. Ejecutar testings
+
+```bash
+python manage.py test InvoiceSystem.tests.unit.taxes.test_tax_calculation
+```
+
 ## Estructura del Proyecto
 
 ```plaintext
