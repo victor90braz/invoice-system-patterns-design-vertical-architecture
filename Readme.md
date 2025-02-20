@@ -125,7 +125,7 @@ Install the `coverage` package if it's not already installed:
 Run the tests with coverage:
 
    ```bash
-coverage run manage.py test inmaticParte3Debugging.tests.service.accounting_invoice_service_test
+coverage run manage.py test InvoiceSystem.tests.unit
 coverage report
 coverage html
    ```
