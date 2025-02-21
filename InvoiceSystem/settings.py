@@ -12,12 +12,16 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 import os
 from pathlib import Path
+from dotenv import load_dotenv
 
 import pymysql
+
+from InvoiceSystem.app.modules.invoices.notifications.enums.observer_config import ObserverType
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+load_dotenv()
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -131,3 +135,27 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+# Configuración de email en Django
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER", "tuemail@gmail.com")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD", "contraseña_generada")
+
+
+# settings.py
+DEFAULT_FROM_EMAIL = "victor.90braz@gmail.com"
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"  # or another backend
+
+
+# settings.py
+
+OBSERVERS = {
+    ObserverType.ACCOUNTING: True,
+    ObserverType.TREASURY: True,
+    ObserverType.AUDIT_LOG: True,
+    ObserverType.EMAIL_NOTIFICATION: True,
+}

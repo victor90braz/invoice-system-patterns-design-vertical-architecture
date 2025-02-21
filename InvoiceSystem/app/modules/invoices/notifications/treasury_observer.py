@@ -1,6 +1,6 @@
-from InvoiceSystem.app.modules.invoices.notifications.accounting_entries_observer import AccountingEntriesObserver
+from InvoiceSystem.app.modules.invoices.interfaces.accounting_entries_observer_interface import BaseAccountingEntriesObserverInterface
 
+class TreasuryObserver(BaseAccountingEntriesObserverInterface):
 
-class TreasuryObserver(AccountingEntriesObserver):
     def update(self, invoice):
-        print(f"Notificando a tesorería sobre la factura {invoice.invoice_number}")
+        print(f"Notifying treasury about invoice {invoice.invoice_number}")

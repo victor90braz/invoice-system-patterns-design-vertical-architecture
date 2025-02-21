@@ -1,19 +1,14 @@
-from InvoiceSystem.app.modules.invoices.interfaces.invoice_state_interface import BaseInvoiceStateInterface, CancelledState, PostedState
-
+from InvoiceSystem.app.modules.invoices.interfaces.invoice_state_interface import BaseInvoiceStateInterface
+from InvoiceSystem.app.modules.invoices.invoice_states.cancelled_state import CancelledState
+from InvoiceSystem.app.modules.invoices.invoice_states.posted_state import PostedState
 
 class DraftState(BaseInvoiceStateInterface):
-    """Estado inicial de una factura (borrador)."""
 
     def approve(self, invoice):
-        """Transición a estado aprobado."""
-        print(f"Factura {invoice.invoice_id} aprobada desde estado {self}.")
-        invoice.state = PostedState()  # Cambiar al estado "Posted"
+        invoice.state = PostedState()
 
     def cancel(self, invoice):
-        """Transición a estado cancelado."""
-        print(f"Factura {invoice.invoice_id} cancelada desde estado {self}.")
-        invoice.state = CancelledState()  # Cambiar al estado "Cancelled"
+        invoice.state = CancelledState()
 
     def pay(self, invoice):
-        """Transición a estado pagado."""
-        print(f"No se puede pagar una factura en estado {self}. Primero debe ser aprobada.")
+        raise ValueError(f"Cannot pay an invoice in {self.__class__.__name__} state. It must be approved first.")

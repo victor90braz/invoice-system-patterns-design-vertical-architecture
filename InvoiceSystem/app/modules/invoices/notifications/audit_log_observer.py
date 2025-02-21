@@ -1,6 +1,7 @@
-from InvoiceSystem.app.modules.invoices.notifications.accounting_entries_observer import AccountingEntriesObserver
+from InvoiceSystem.app.modules.invoices.interfaces.accounting_entries_observer_interface import BaseAccountingEntriesObserverInterface
 
+class AuditLogObserver(BaseAccountingEntriesObserverInterface):
+    """Observer responsible for generating an audit log."""
 
-class AuditLogObserver(AccountingEntriesObserver):
     def update(self, invoice):
-        print(f"Generando log de auditoría para la factura {invoice.invoice_number}")
+        print(f"Generating audit log for invoice {invoice.invoice_number}")

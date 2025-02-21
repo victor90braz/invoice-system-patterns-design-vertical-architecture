@@ -1,17 +1,12 @@
 from InvoiceSystem.app.modules.invoices.interfaces.invoice_state_interface import BaseInvoiceStateInterface
 
-
 class PaidState(BaseInvoiceStateInterface):
-    """Estado de una factura pagada."""
-
+    
     def approve(self, invoice):
-        """Transición a estado aprobado."""
-        print(f"La factura {invoice.invoice_id} ya está pagada (estado {self}).")
+        raise ValueError(f"Invoice {invoice.invoice_id} is already paid.")
 
     def cancel(self, invoice):
-        """Transición a estado cancelado."""
-        print(f"No se puede cancelar una factura en estado {self}.")
+        raise ValueError(f"Cannot cancel an invoice in {self.__class__.__name__} state.")
 
     def pay(self, invoice):
-        """Transición a estado pagado."""
-        print(f"La factura {invoice.invoice_id} ya está pagada (estado {self}).")
+        raise ValueError(f"Invoice {invoice.invoice_id} is already paid.")

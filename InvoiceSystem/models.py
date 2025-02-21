@@ -12,3 +12,4 @@ class Invoice(models.Model):
     )
     customer_name = models.CharField(max_length=255)
     customer_id = models.IntegerField()
+    customer_email = models.EmailField(max_length=255)
