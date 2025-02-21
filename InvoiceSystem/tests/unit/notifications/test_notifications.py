@@ -4,7 +4,7 @@ from django.db.models.signals import post_save
 
 from InvoiceSystem import settings
 from InvoiceSystem.app.modules.invoices.notifications.email_notification_observer import EmailNotificationObserver
-from InvoiceSystem.app.modules.invoices.notifications.invoice_processor import InvoiceProcessor
+from InvoiceSystem.app.modules.invoices.notifications.actions.invoice_notification_actions import InvoiceNotificationActions  # Correct import
 from InvoiceSystem.app.modules.invoices.notifications.accounting_entries_observer import AccountingEntriesObserver
 from InvoiceSystem.app.modules.invoices.notifications.audit_log_observer import AuditLogObserver
 from InvoiceSystem.app.modules.invoices.notifications.treasury_observer import TreasuryObserver
@@ -14,7 +14,7 @@ from InvoiceSystem.models import Invoice
 
 class InvoiceNotificationTest(TestCase):
 
-    def test_invoice_processor_notifies_observers(self):
+    def test_invoice_notification_actions_notifies_observers(self):
         # Arrange
         self.invoice = InvoiceFactory.create(
             customer_email="customer@example.com"
@@ -23,15 +23,15 @@ class InvoiceNotificationTest(TestCase):
         self.audit_observer = MagicMock(spec=AuditLogObserver)
         self.treasury_observer = MagicMock(spec=TreasuryObserver)
         
-        self.processor = InvoiceProcessor()
-        self.processor.add_observer(self.accounting_observer)
-        self.processor.add_observer(self.audit_observer)
-        self.processor.add_observer(self.treasury_observer)
+        self.notification_manager = InvoiceNotificationActions()  # Updated name
+        self.notification_manager.add_observer(self.accounting_observer)
+        self.notification_manager.add_observer(self.audit_observer)
+        self.notification_manager.add_observer(self.treasury_observer)
 
         post_save.connect(InvoicePostSaveNotifier.notify, sender=Invoice)
 
         # Act
-        self.processor.process_invoice(self.invoice)
+        self.notification_manager.process_invoice(self.invoice)
 
         # Assert
         self.accounting_observer.update.assert_called_once_with(self.invoice)
@@ -40,8 +40,8 @@ class InvoiceNotificationTest(TestCase):
 
         post_save.disconnect(InvoicePostSaveNotifier.notify, sender=Invoice)
 
-    @patch("InvoiceSystem.app.modules.invoices.notifications.invoice_processor.InvoiceProcessor.process_invoice")
-    def test_post_save_signal_triggers_notifications(self, mock_process):
+    @patch("InvoiceSystem.app.modules.invoices.notifications.actions.invoice_notification_actions.InvoiceNotificationActions.process_invoice")  # Corrected patch target
+    def test_post_save_signal_triggers_invoice_notification_actions(self, mock_process):
         # Arrange
         self.invoice = InvoiceFactory.create(
             customer_email="customer@example.com"

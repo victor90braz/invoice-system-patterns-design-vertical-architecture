@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 import pymysql
 
-from InvoiceSystem.app.modules.invoices.notifications.enums.observer_config import ObserverType
+from InvoiceSystem.app.modules.invoices.notifications.enums.observer_types import ObserverType
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 

@@ -1,16 +1,15 @@
-import logging
-from enum import Enum
-from django.conf import settings
-
 from InvoiceSystem.app.modules.invoices.notifications.accounting_entries_observer import AccountingEntriesObserver
 from InvoiceSystem.app.modules.invoices.notifications.audit_log_observer import AuditLogObserver
 from InvoiceSystem.app.modules.invoices.notifications.email_notification_observer import EmailNotificationObserver
-from InvoiceSystem.app.modules.invoices.notifications.enums.observer_config import ObserverType
+from InvoiceSystem.app.modules.invoices.notifications.enums.observer_types import ObserverType
 from InvoiceSystem.app.modules.invoices.notifications.treasury_observer import TreasuryObserver
+import logging
+
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
-class InvoiceProcessor:
+class InvoiceNotificationActions:
 
     def __init__(self):
         self.observers = []
