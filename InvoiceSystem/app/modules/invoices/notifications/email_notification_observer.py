@@ -16,6 +16,11 @@ class EmailNotificationObserver(BaseAccountingEntriesObserverInterface):
         
         subject = f"Factura #{invoice.id} Generada"
         message = f"Hola, su factura con ID {invoice.id} ha sido generada. Gracias por su compra."
+        
+        if getattr(invoice, 'customer_language', 'es') == 'en':
+            subject = f"Invoice #{invoice.id} Generated"
+            message = f"Hello, your invoice with ID {invoice.id} has been generated. Thank you for your purchase."
+        
         from_email = settings.DEFAULT_FROM_EMAIL
         recipient_list = [invoice.customer_email]
 

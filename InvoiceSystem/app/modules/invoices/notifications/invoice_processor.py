@@ -10,9 +10,7 @@ from InvoiceSystem.app.modules.invoices.notifications.treasury_observer import T
 
 logger = logging.getLogger(__name__)
 
-
 class InvoiceProcessor:
-    """Manages invoice processing and notifies observers."""
 
     def __init__(self):
         self.observers = []
