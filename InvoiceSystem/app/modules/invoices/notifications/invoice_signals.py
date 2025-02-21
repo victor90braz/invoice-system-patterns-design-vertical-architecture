@@ -13,6 +13,6 @@ class InvoicePostSaveNotifier:
 
         processor = InvoiceNotificationActions()
         processor.add_observer(AccountingEntriesObserver())
-        processor.add_observer(AuditLogObserver())
         processor.add_observer(TreasuryObserver())
+        processor.add_observer(AuditLogObserver())
         processor.process_invoice(instance)
