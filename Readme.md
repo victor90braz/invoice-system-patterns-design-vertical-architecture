@@ -99,7 +99,7 @@ MIGRATION_MODULES = {
 Then, run the following commands to apply the migrations:
 
 ```bash
-python manage.py makemigrations invoices --empty --name initial
+python manage.py makemigrations invoice_app --empty --name initial
 python manage.py makemigrations
 python manage.py migrate
 ```
@@ -115,7 +115,7 @@ python manage.py shell
 Then execute the following commands to insert sample data:
 
 ```python
-from InvoiceSystem.app.modules.invoices.models import Supplier, Invoice, TaxPolicy
+from invoice_app.models import Supplier, Invoice, TaxPolicy
 
 tax_policy = TaxPolicy.objects.create(
     product_type="electronics",
