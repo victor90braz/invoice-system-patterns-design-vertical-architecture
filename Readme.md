@@ -47,8 +47,6 @@ cd InvoiceSystem
 python -m venv venv
 # On Windows:
 venv\Scripts\activate
-# On macOS/Linux:
-source venv/bin/activate
 ```
 
 ### 3. Run the `setup-windows.bat` script (Windows only):
@@ -90,8 +88,17 @@ CREATE DATABASE InvoiceSystem;
 
 ### 7. Run migrations:
 
+Ensure that your **`settings.py`** contains the following configuration:
+
+```python
+MIGRATION_MODULES = {
+    'invoices': 'InvoiceSystem.database.migrations',
+}
+```
+
+Then, run the following commands to apply the migrations:
+
 ```bash
-Get-ChildItem InvoiceSystem/database/migrations/*.py -Exclude "__init__.py" | Remove-Item -Force
 python manage.py makemigrations invoices --empty --name initial
 python manage.py makemigrations
 python manage.py migrate
@@ -105,7 +112,7 @@ Open the Django shell:
 python manage.py shell
 ```
 
-Then execute the following commands:
+Then execute the following commands to insert sample data:
 
 ```python
 from InvoiceSystem.app.modules.invoices.models import Supplier, Invoice, TaxPolicy
@@ -168,4 +175,3 @@ coverage run manage.py test InvoiceSystem.tests
 coverage report
 coverage html
 ```
-

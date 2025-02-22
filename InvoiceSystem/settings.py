@@ -26,6 +26,10 @@ INSTALLED_APPS = [
     'InvoiceSystem.app.modules.invoices',
 ]
 
+MIGRATION_MODULES = {
+    'invoices': 'InvoiceSystem.database.migrations',
+}
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
