@@ -157,7 +157,7 @@ pip install coverage
 Run the tests with coverage:
 
 ```bash
-coverage run manage.py test InvoiceSystem.tests.unit
+coverage run manage.py test InvoiceSystem.tests
 coverage report
 coverage html
 ```
