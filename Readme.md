@@ -142,7 +142,8 @@ python manage.py runserver
 ### 11. Run unit tests:
 
 ```bash
-python manage.py test InvoiceSystem.tests.unit.accounting.test_accounting_strategies
+python manage.py test InvoiceSystem.tests
+python manage.py test InvoiceSystem.tests.unit.notifications.test_notifications.InvoiceNotificationTest
 ```
 
 ### 12. Generate Test Coverage Report in HTML:
