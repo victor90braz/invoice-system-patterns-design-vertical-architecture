@@ -10,19 +10,15 @@ class EmailNotificationObserver(BaseAccountingEntriesObserverInterface):
 
     def update(self, invoice: Invoice):
 
-        if not invoice.customer_email:
-            logger.warning(f"No email sent: Invoice {invoice.id} has no customer email.")
+        if not invoice.supplier.email:
+            logger.warning(f"No email sent: Invoice {invoice.id} has no supplier email.")
             return
         
-        subject = f"Factura #{invoice.id} Generada"
-        message = f"Hola, su factura con ID {invoice.id} ha sido generada. Gracias por su compra."
-        
-        if getattr(invoice, 'customer_language', 'es') == 'en':
-            subject = f"Invoice #{invoice.id} Generated"
-            message = f"Hello, your invoice with ID {invoice.id} has been generated. Thank you for your purchase."
-        
+        subject = f"Invoice #{invoice.id} Generated"
+        message = f"Hello, your invoice with ID {invoice.id} has been generated. Thank you for your purchase."
+
         from_email = settings.DEFAULT_FROM_EMAIL
-        recipient_list = [invoice.customer_email]
+        recipient_list = [invoice.supplier.email]  
 
         try:
             send_mail(
@@ -31,6 +27,6 @@ class EmailNotificationObserver(BaseAccountingEntriesObserverInterface):
                 from_email=from_email,
                 recipient_list=recipient_list
             )
-            logger.info(f"Email sent to {invoice.customer_email} for invoice {invoice.id}.")
+            logger.info(f"Email sent to {invoice.supplier.email} for invoice {invoice.id}.")
         except Exception as e:
             logger.error(f"Failed to send email for invoice {invoice.id}: {e}")
