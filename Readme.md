@@ -156,8 +156,8 @@ python manage.py runserver
 ### 11. Run unit tests:
 
 ```bash
-python manage.py test InvoiceSystem.tests
-python manage.py test InvoiceSystem.tests.unit.notifications.test_notifications.InvoiceNotificationTest
+python manage.py test invoice_app.tests
+python manage.py test invoice_app.tests.unit.notifications.test_notifications.InvoiceNotificationTest
 ```
 
 ### 12. Generate Test Coverage Report in HTML:
@@ -171,7 +171,7 @@ pip install coverage
 Run the tests with coverage:
 
 ```bash
-coverage run manage.py test InvoiceSystem.tests
+coverage run manage.py test invoice_app.tests
 coverage report
 coverage html
 ```
