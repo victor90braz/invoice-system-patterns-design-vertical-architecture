@@ -2,7 +2,7 @@ from InvoiceSystem.app.modules.invoices.accounting_entries.strategies.types.purc
 from InvoiceSystem.app.modules.invoices.accounting_entries.strategies.types.expense_strategy import ExpenseStrategy
 from InvoiceSystem.app.modules.invoices.accounting_entries.strategies.types.investment_strategy import InvestmentStrategy
 from InvoiceSystem.app.modules.invoices.interfaces.accounting_entries_interface import BaseInvoiceAccountingEntriesInterface
-from InvoiceSystem.models import Invoice
+from InvoiceSystem.app.modules.invoices.models.invoice import Invoice
 
 
 def get_accounting_strategy(invoice: Invoice) -> BaseInvoiceAccountingEntriesInterface:

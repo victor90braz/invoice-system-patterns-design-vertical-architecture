@@ -3,7 +3,7 @@ from InvoiceSystem.app.modules.invoices.accounting_entries.strategies.types.expe
 from InvoiceSystem.app.modules.invoices.accounting_entries.strategies.types.purchase_strategy import PurchaseStrategy
 from InvoiceSystem.app.modules.invoices.accounting_entries.strategies.types.investment_strategy import InvestmentStrategy
 from InvoiceSystem.app.modules.invoices.accounting_entries.strategies.accounting_entries_driver import AccountingEntriesDriver
-from InvoiceSystem.app.modules.invoices.models.invoice_type import InvoiceType
+from InvoiceSystem.app.modules.invoices.accounting_entries.strategies.types.invoice_type import InvoiceType
 from InvoiceSystem.database.factories.invoice_factory import InvoiceFactory
 from InvoiceSystem.database.factories.supplier_factory import SupplierFactory
 from InvoiceSystem.database.factories.tax_policy_factory import TaxPolicyFactory

@@ -1,7 +1,7 @@
 import factory
-from InvoiceSystem.app.modules.invoices.models.invoice_type import InvoiceType
+from InvoiceSystem.app.modules.invoices.accounting_entries.strategies.types.invoice_type import InvoiceType
 from InvoiceSystem.database.factories.supplier_factory import SupplierFactory
-from InvoiceSystem.models import Invoice
+from InvoiceSystem.app.modules.invoices.models.invoice import Invoice
 
 class InvoiceFactory(factory.django.DjangoModelFactory):
     class Meta:

@@ -1,4 +1,4 @@
-from InvoiceSystem.models import Invoice
+from InvoiceSystem.app.modules.invoices.models.invoice import Invoice
 from InvoiceSystem.app.modules.invoices.interfaces.accounting_entries_observer_interface import BaseAccountingEntriesObserverInterface
 from django.core.mail import send_mail
 from django.conf import settings

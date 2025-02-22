@@ -1,8 +1,8 @@
 from InvoiceSystem.app.modules.invoices.accounting_entries.strategies.types.purchase_strategy import PurchaseStrategy
 from InvoiceSystem.app.modules.invoices.accounting_entries.strategies.types.expense_strategy import ExpenseStrategy
 from InvoiceSystem.app.modules.invoices.accounting_entries.strategies.types.investment_strategy import InvestmentStrategy
-from InvoiceSystem.app.modules.invoices.models.invoice_type import InvoiceType
-from InvoiceSystem.models import Invoice
+from InvoiceSystem.app.modules.invoices.accounting_entries.strategies.types.invoice_type import InvoiceType
+from InvoiceSystem.app.modules.invoices.models.invoice import Invoice
 
 class AccountingEntriesDriver:
 

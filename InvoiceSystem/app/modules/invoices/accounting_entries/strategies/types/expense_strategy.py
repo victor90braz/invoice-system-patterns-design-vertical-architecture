@@ -1,5 +1,5 @@
 from InvoiceSystem.app.modules.invoices.interfaces.accounting_entries_interface import BaseInvoiceAccountingEntriesInterface
-from InvoiceSystem.models import Invoice
+from InvoiceSystem.app.modules.invoices.models.invoice import Invoice
 
 
 class ExpenseStrategy(BaseInvoiceAccountingEntriesInterface):

@@ -1,66 +1,65 @@
-```markdown
 # InvoiceSystem
 
-**InvoiceSystem** es un sistema de facturación desarrollado con **Django**.  
-Implementa una **arquitectura vertical** y usa varios **patrones de diseño**:  
-Estrategia, Fábrica, Estado, Observador y Cadena de Responsabilidad.
+**InvoiceSystem** is a billing system developed with **Django**.  
+It follows a **vertical architecture** and implements several **design patterns**:  
+Strategy, Factory, State, Observer, and Chain of Responsibility.
 
-El sistema gestiona:
+The system manages:
 
-- **Generación de asientos contables**: (tipos de factura: compras, gastos, inversiones).
-- **Estados de facturas**: (borrador, publicado, pagado, cancelado).
-- **Notificaciones**: (Observador / Pub-Sub).
-- **Cálculo de impuestos**: (Estrategia o Cadena de Responsabilidad).
+- **Accounting entries generation**: (invoice types: purchases, expenses, investments).
+- **Invoice states**: (draft, published, paid, canceled).
+- **Notifications**: (Observer / Pub-Sub).
+- **Tax calculations**: (Strategy or Chain of Responsibility).
 
-Diseñado para empresas como **Mercadona** y **Airbnb**,  
-el sistema permite personalizar reglas de negocio.
+Designed for companies like **Mercadona** and **Airbnb**,  
+the system allows business rules customization.
 
-## Características
+## Features
 
-- **Arquitectura Vertical**: Organización del código por funcionalidades:  
-  `invoices`, `accounting`, `notifications`, `taxes`, y `common`.
-- **Patrones de Diseño**:
-  - **Estrategia + Fábrica**: Para generar asientos contables.
-  - **Estado**: Para gestionar el ciclo de vida de las facturas.
-  - **Observador**: Para manejar notificaciones de eventos importantes.
-  - **Estrategia / Cadena de Responsabilidad**: Para cálculos de impuestos.
-- **Modularidad y Escalabilidad**:  
-  Fácil integración de nuevas funcionalidades.
+- **Vertical Architecture**: Code is organized by functionalities:  
+  `invoices`, `accounting`, `notifications`, `taxes`, and `common`.
+- **Design Patterns**:
+  - **Strategy + Factory**: For generating accounting entries.
+  - **State**: For managing the invoice lifecycle.
+  - **Observer**: For handling important event notifications.
+  - **Strategy / Chain of Responsibility**: For tax calculations.
+- **Modularity and Scalability**:  
+  Easy integration of new functionalities.
 
-## Requisitos
+## Requirements
 
-- Python 3.8 o superior
+- Python 3.8 or higher
 - MySQL
 - `requirements.txt`
 
-## Instalación
+## Installation
 
-### 1. Clonar el repositorio:
+### 1. Clone the repository:
 
 ```bash
 git clone https://github.com/victor90braz/invoice-system-patterns-design-vertical-architecture.git
 cd InvoiceSystem
 ```
 
-### 2. Crear y activar un entorno virtual:
+### 2. Create and activate a virtual environment:
 
 ```bash
 python -m venv venv
-# En Windows:
+# On Windows:
 venv\Scripts\activate
-# En macOS/Linux:
+# On macOS/Linux:
 source venv/bin/activate
 ```
 
-### 3. Ejecutar el script `setup-windows.bat` (solo en Windows):
+### 3. Run the `setup-windows.bat` script (Windows only):
 
 ```bash
 ./setup-windows.bat
 ```
 
-### 4. Configuración de entorno:
+### 4. Environment configuration:
 
-Crea un archivo `.env` en la raíz del proyecto y agrega las siguientes variables de entorno:
+Create a `.env` file in the project root and add the following environment variables:
 
 ```env
 DB_NAME=invoice_system_db
@@ -73,59 +72,92 @@ DEBUG=True
 ALLOWED_HOSTS=127.0.0.1,localhost
 ```
 
-### 6. Instalar dependencias:
+### 5. Install dependencies:
 
 ```bash
 pip install -r requirements.txt
 pip install mysqlclient
 ```
 
-### 7. Crear base de datos en MySQL:
+### 6. Create a MySQL database:
 
-Accede a MySQL y crea la base de datos:
+Access MySQL and create the database:
 
 ```bash
 mysql -u root -p
 CREATE DATABASE InvoiceSystem;
 ```
 
-### 8. Ejecutar migraciones:
+### 7. Run migrations:
 
 ```bash
+rm -rf InvoiceSystem/app/modules/invoices/migrations/*
 python manage.py makemigrations
 python manage.py migrate
 ```
 
-### 9. Crear un superusuario (opcional):
+### 8. Insert sample data:
+
+```bash
+python manage.py shell
+
+from InvoiceSystem.app.modules.invoices.models import Supplier, Invoice, TaxPolicy
+
+tax_policy = TaxPolicy.objects.create(
+    product_type="electronics",
+    country="Spain",
+    tax_regime="General",
+    tax_rate=21.00
+)
+
+supplier = Supplier.objects.create(
+    name="Tech Supplier",
+    email="supplier@example.com",
+    tax_policy=tax_policy
+)
+
+invoice = Invoice.objects.create(
+    invoice_number="INV-001",
+    total_value=500.00,
+    invoice_type="purchase_invoice",
+    supplier=supplier
+)
+
+print("✅ Data inserted successfully!")
+exit()
+```
+
+### 9. Create a superuser (optional):
 
 ```bash
 python manage.py createsuperuser
 ```
 
-### 10. Iniciar el servidor de desarrollo:
+### 10. Start the development server:
 
 ```bash
 python manage.py runserver
 ```
 
-### 11. Ejecutar testings
+### 11. Run unit tests:
 
 ```bash
 python manage.py test InvoiceSystem.tests.unit.accounting.test_accounting_strategies
 ```
 
-### 12. Generating Test Coverage Report in HTML
+### 12. Generate Test Coverage Report in HTML:
 
 Install the `coverage` package if it's not already installed:
 
-   ```bash
-   pip install coverage
-   ```
+```bash
+pip install coverage
+```
 
 Run the tests with coverage:
 
-   ```bash
+```bash
 coverage run manage.py test InvoiceSystem.tests.unit
 coverage report
 coverage html
-   ```
+```
+

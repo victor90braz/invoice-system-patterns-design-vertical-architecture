@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from InvoiceSystem.models import Invoice  # Importing the Invoice model
+from InvoiceSystem.app.modules.invoices.models.invoice import Invoice  
 
 class BaseInvoiceAccountingEntriesInterface(ABC):
     

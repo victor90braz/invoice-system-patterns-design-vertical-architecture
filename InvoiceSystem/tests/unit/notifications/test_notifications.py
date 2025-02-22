@@ -10,9 +10,7 @@ from InvoiceSystem.app.modules.invoices.notifications.audit_log_observer import 
 from InvoiceSystem.app.modules.invoices.notifications.treasury_observer import TreasuryObserver
 from InvoiceSystem.app.modules.invoices.notifications.invoice_signals import InvoicePostSaveNotifier
 from InvoiceSystem.database.factories.invoice_factory import InvoiceFactory
-from InvoiceSystem.database.factories.supplier_factory import SupplierFactory
-from InvoiceSystem.database.factories.tax_policy_factory import TaxPolicyFactory
-from InvoiceSystem.models import Invoice
+from InvoiceSystem.app.modules.invoices.models.invoice import Invoice
 
 
 class InvoiceNotificationTest(TestCase):

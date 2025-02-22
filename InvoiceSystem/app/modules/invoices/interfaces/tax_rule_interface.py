@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from decimal import Decimal
-from InvoiceSystem.models import Invoice
+from InvoiceSystem.app.modules.invoices.models.invoice import Invoice
 
 
 class TaxRuleInterface(ABC):

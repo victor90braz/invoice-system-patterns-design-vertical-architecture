@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 from django.db import models
-from InvoiceSystem.app.modules.invoices.models.invoice_type import InvoiceType
+from InvoiceSystem.app.modules.invoices.accounting_entries.strategies.types.invoice_type import InvoiceType
 from InvoiceSystem.app.modules.invoices.models.supplier import Supplier
 
 

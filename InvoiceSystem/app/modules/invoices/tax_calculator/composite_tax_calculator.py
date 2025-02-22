@@ -1,5 +1,5 @@
 from InvoiceSystem.app.modules.invoices.interfaces.tax_rule_interface import TaxRuleInterface
-from InvoiceSystem.models import Invoice
+from InvoiceSystem.app.modules.invoices.models.invoice import Invoice
 from decimal import Decimal
 
 
