@@ -91,16 +91,23 @@ CREATE DATABASE InvoiceSystem;
 ### 7. Run migrations:
 
 ```bash
-rm -rf InvoiceSystem/app/modules/invoices/migrations/*
+Get-ChildItem InvoiceSystem/database/migrations/*.py -Exclude "__init__.py" | Remove-Item -Force
+python manage.py makemigrations invoices --empty --name initial
 python manage.py makemigrations
 python manage.py migrate
 ```
 
 ### 8. Insert sample data:
 
+Open the Django shell:
+
 ```bash
 python manage.py shell
+```
 
+Then execute the following commands:
+
+```python
 from InvoiceSystem.app.modules.invoices.models import Supplier, Invoice, TaxPolicy
 
 tax_policy = TaxPolicy.objects.create(
