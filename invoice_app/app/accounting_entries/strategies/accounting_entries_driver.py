@@ -5,17 +5,16 @@ from invoice_app.app.accounting_entries.strategies.types.purchase_strategy impor
 from invoice_app.models.invoice import Invoice
 
 
-class AccountingEntriesDriver:
+STRATEGY_MAP = {
+    InvoiceType.PURCHASE_INVOICE: PurchaseStrategy,
+    InvoiceType.EXPENSE_INVOICE: ExpenseStrategy,
+    InvoiceType.INVESTMENT_INVOICE: InvestmentStrategy
+}
 
+class AccountingEntriesDriver:
     @staticmethod
     def get_strategy(invoice: Invoice):
-
-        match invoice.invoice_type:
-            case InvoiceType.PURCHASE_INVOICE:
-                return PurchaseStrategy()
-            case InvoiceType.EXPENSE_INVOICE:
-                return ExpenseStrategy()
-            case InvoiceType.INVESTMENT_INVOICE:
-                return InvestmentStrategy()
-            case _:
-                raise ValueError(f"Unsupported invoice type: {invoice.invoice_type}")
+        strategy_class = STRATEGY_MAP.get(invoice.invoice_type)
+        if not strategy_class:
+            raise ValueError(f"Unsupported invoice type: {invoice.invoice_type}")
+        return strategy_class()

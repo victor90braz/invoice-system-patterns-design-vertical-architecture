@@ -1,207 +1,135 @@
-# Prueba Técnica: Patrones de Diseño
+Sí, en tu implementación ya has aplicado un **Patrón de Estrategia (Strategy Pattern)** para manejar la generación de asientos contables según el tipo de factura. Aquí está el desglose de cómo lo implementaste y qué tan alineado está con el requerimiento:
 
-Este documento describe los patrones de diseño aplicados a diferentes escenarios en un sistema de facturación. Se utilizan los patrones **Estrategia**, **Estado** y **Observador** para resolver problemas específicos relacionados con la generación de asientos, estados de factura, notificaciones y cálculo de impuestos.
-
----
-
-## Escenario 1: Generación de Asientos
-
-### 1. ¿Qué patrón aplicarías?
-- **Patrón Estrategia (Strategy Pattern)**
-
-### 2. ¿Por qué ese patrón?
-El patrón Estrategia permite encapsular diferentes algoritmos (reglas de contabilización) en clases separadas. Esto facilita la adición de nuevos tipos de facturas en el futuro sin modificar el código existente, siguiendo el principio de abierto/cerrado (Open/Closed Principle).
-
-### 3. Implementación
-
-
-
-### 4. Ventajas
-- **Extensibilidad:** Fácil adición de nuevos tipos de facturas.
-- **Mantenibilidad:** Cada estrategia está encapsulada.
-- **Reutilización:** Las estrategias pueden ser reutilizadas en diferentes partes del sistema.
+### 🔹 **Patrón aplicado: Strategy Pattern**
+**¿Por qué este patrón?**  
+- Permite definir una familia de algoritmos (generación de asientos contables para diferentes tipos de factura) y encapsularlos en clases separadas.
+- Facilita la adición de nuevos tipos de facturas sin modificar el código existente.
+- Promueve el Principio de Abierto/Cerrado (OCP): Se pueden agregar nuevos tipos de facturas sin alterar la lógica principal.
 
 ---
 
-## Escenario 2: Estados de Factura
+### ✅ **¿Cómo lo implementaste?**
+1. **Interfaz Base:**  
+   Creaste `BaseInvoiceAccountingEntriesInterface`, que define un método abstracto `generate_entry()` para que cada tipo de factura implemente su propia lógica de generación de asientos.
 
-### 1. ¿Qué patrón aplicarías?
-- **Patrón Estado (State Pattern)**
+   ```python
+   from abc import ABC, abstractmethod
+   from invoice_app.models.invoice import Invoice
 
-### 2. ¿Por qué ese patrón?
-El patrón Estado es adecuado para manejar el comportamiento de un objeto (factura) que cambia según su estado. Cada estado puede tener diferentes reglas de validación y transiciones.
+   class BaseInvoiceAccountingEntriesInterface(ABC):
+       
+       @abstractmethod
+       def generate_entry(self, invoice: Invoice) -> dict:
+           pass
+   ```
 
-### 3. Implementación
+2. **Clases Estratégicas:**  
+   Implementaste una estrategia para cada tipo de factura:
+   - `ExpenseStrategy`
+   - `InvestmentStrategy`
+   - `PurchaseStrategy`
+   
+   **Ejemplo:**
+   ```python
+   from invoice_app.app.interfaces.accounting_entries_interface import BaseInvoiceAccountingEntriesInterface
+   from invoice_app.models.invoice import Invoice
 
-```python
-from abc import ABC, abstractmethod
+   class ExpenseStrategy(BaseInvoiceAccountingEntriesInterface):
+       def generate_entry(self, invoice: Invoice) -> dict:
+           return {
+               "account": f"6000 - {invoice.invoice_type}",
+               "amount": invoice.total_value,
+               "description": f"Generated type: {invoice.invoice_type}, Invoice Number - {invoice.invoice_number}"
+           }
+   ```
 
-class InvoiceState(ABC):
-    @abstractmethod
-    def approve(self, invoice):
-        pass
+3. **Driver para Seleccionar la Estrategia:**  
+   `AccountingEntriesDriver` selecciona la estrategia adecuada según el tipo de factura usando `match case`:
+   ```python
+   from invoice_app.app.accounting_entries.strategies.types.expense_strategy import ExpenseStrategy
+   from invoice_app.app.accounting_entries.strategies.types.investment_strategy import InvestmentStrategy
+   from invoice_app.app.accounting_entries.strategies.types.invoice_type import InvoiceType
+   from invoice_app.app.accounting_entries.strategies.types.purchase_strategy import PurchaseStrategy
+   from invoice_app.models.invoice import Invoice
 
-    @abstractmethod
-    def cancel(self, invoice):
-        pass
+   class AccountingEntriesDriver:
+       @staticmethod
+       def get_strategy(invoice: Invoice):
+           match invoice.invoice_type:
+               case InvoiceType.PURCHASE_INVOICE:
+                   return PurchaseStrategy()
+               case InvoiceType.EXPENSE_INVOICE:
+                   return ExpenseStrategy()
+               case InvoiceType.INVESTMENT_INVOICE:
+                   return InvestmentStrategy()
+               case _:
+                   raise ValueError(f"Unsupported invoice type: {invoice.invoice_type}")
+   ```
 
-    @abstractmethod
-    def pay(self, invoice):
-        pass
+4. **Pruebas Unitarias:**  
+   Has implementado `TestAccountingStrategies` para verificar que cada tipo de factura genera correctamente sus asientos contables.
 
-class DraftState(InvoiceState):
-    def approve(self, invoice):
-        print("Factura aprobada desde estado borrador.")
-        invoice.state = PostedState()
+   **Ejemplo de test para facturas de compra:**
+   ```python
+   def test_purchase_invoice_generates_purchase_entry(self):
+       # Arrange
+       tax_policy = TaxPolicyFactory.create()
+       supplier = SupplierFactory.create(tax_policy=tax_policy)
+       invoice = InvoiceFactory.create(
+           invoice_number="003",
+           total_value=500.0,
+           invoice_type=InvoiceType.PURCHASE_INVOICE,
+           supplier=supplier
+       )
 
-    def cancel(self, invoice):
-        print("Factura cancelada desde estado borrador.")
-        invoice.state = CancelledState()
+       # Act
+       strategy = AccountingEntriesDriver.get_strategy(invoice)
+       entry = strategy.generate_entry(invoice)
 
-    def pay(self, invoice):
-        raise ValueError("No se puede pagar una factura en estado borrador.")
-
-class PostedState(InvoiceState):
-    def approve(self, invoice):
-        raise ValueError("La factura ya está aprobada.")
-    
-    def cancel(self, invoice):
-        print("Factura cancelada desde estado contabilizado.")
-        invoice.state = CancelledState()
-
-    def pay(self, invoice):
-        print("Factura pagada desde estado contabilizado.")
-        invoice.state = PaidState()
-
-class PaidState(InvoiceState):
-    def approve(self, invoice):
-        raise ValueError("La factura ya está pagada.")
-    
-    def cancel(self, invoice):
-        raise ValueError("No se puede cancelar una factura ya pagada.")
-    
-    def pay(self, invoice):
-        raise ValueError("La factura ya está pagada.")
-
-class CancelledState(InvoiceState):
-    def approve(self, invoice):
-        raise ValueError("No se puede aprobar una factura cancelada.")
-    
-    def cancel(self, invoice):
-        raise ValueError("La factura ya está cancelada.")
-    
-    def pay(self, invoice):
-        raise ValueError("No se puede pagar una factura cancelada.")
-```
-
-### 4. Ventajas
-- **Claridad:** El código relacionado con cada estado está encapsulado.
-- **Flexibilidad:** Las transiciones entre estados son manejadas de manera clara.
-- **Extensibilidad:** Es fácil añadir nuevos estados o modificar transiciones existentes.
-
----
-
-## Escenario 3: Notificaciones
-
-### 1. ¿Qué patrón aplicarías?
-- **Patrón Observador (Observer Pattern)**
-
-### 2. ¿Por qué ese patrón?
-El patrón Observador permite que múltiples objetos (servicios de notificación) sean notificados y actualizados cuando ocurre un evento específico (como la contabilización de una factura). Esto desacopla la lógica de notificación de la lógica de contabilización.
-
-### 3. Implementación
-
-```python
-from abc import ABC, abstractmethod
-
-class Observer(ABC):
-    @abstractmethod
-    def update(self, invoice):
-        pass
-
-class AccountingObserver(Observer):
-    def update(self, invoice):
-        print(f"Actualizando saldos contables para la factura {invoice.id}")
-
-class TreasuryObserver(Observer):
-    def update(self, invoice):
-        print(f"Notificando a tesorería sobre la factura {invoice.id}")
-
-class AuditLogObserver(Observer):
-    def update(self, invoice):
-        print(f"Generando log de auditoría para la factura {invoice.id}")
-
-class Invoice:
-    def __init__(self):
-        self.observers = []
-
-    def add_observer(self, observer):
-        self.observers.append(observer)
-
-    def notify_observers(self):
-        for observer in self.observers:
-            observer.update(self)
-
-    def contabilizar(self):
-        print("Contabilizando factura...")
-        self.notify_observers()
-```
-
-### 4. Ventajas
-- **Desacoplamiento:** La lógica de notificación está separada de la lógica de contabilización.
-- **Extensibilidad:** Es fácil añadir nuevos observadores.
-- **Reutilización:** Los observadores pueden ser reutilizados en diferentes partes del sistema.
+       # Assert
+       self.assertIsInstance(strategy, PurchaseStrategy)
+       self.assertEqual(entry["account"], f"500 - {invoice.invoice_type}")
+       self.assertEqual(entry["amount"], invoice.total_value)
+       self.assertEqual(entry["description"], f"Generated type: {invoice.invoice_type}, Invoice Number - {invoice.invoice_number}")
+   ```
 
 ---
 
-## Escenario 4: Cálculo de Impuestos
-
-### 1. ¿Qué patrón aplicarías?
-- **Patrón Estrategia (Strategy Pattern)**
-
-### 2. ¿Por qué ese patrón?
-El patrón Estrategia permite encapsular diferentes algoritmos de cálculo de impuestos en clases separadas. Esto facilita la combinación de reglas y la adición de nuevas reglas en el futuro.
-
-### 3. Implementación
-
-```python
-from abc import ABC, abstractmethod
-
-class TaxStrategy(ABC):
-    @abstractmethod
-    def calculate_tax(self, invoice):
-        pass
-
-class StandardTaxStrategy(TaxStrategy):
-    def calculate_tax(self, invoice):
-        return invoice.total_value * 0.21  # IVA estándar 21%
-
-class ReducedTaxStrategy(TaxStrategy):
-    def calculate_tax(self, invoice):
-        return invoice.total_value * 0.10  # IVA reducido 10%
-
-class InternationalTaxStrategy(TaxStrategy):
-    def calculate_tax(self, invoice):
-        return 0  # IVA 0% para ventas internacionales
-
-class CombinedTaxStrategy(TaxStrategy):
-    def __init__(self, strategies):
-        self.strategies = strategies
-
-    def calculate_tax(self, invoice):
-        total_tax = 0
-        for strategy in self.strategies:
-            total_tax += strategy.calculate_tax(invoice)
-        return total_tax
-```
-
-### 4. Ventajas
-- **Flexibilidad:** Permite combinar diferentes reglas de impuestos.
-- **Extensibilidad:** Es fácil añadir nuevas reglas de impuestos.
-- **Mantenibilidad:** Cada estrategia está encapsulada.
+### 🔹 **¿Se cumple con los requisitos del escenario?**
+| Requisito | ¿Implementado? | Explicación |
+|-----------|--------------|-------------|
+| Diferentes tipos de facturas generan diferentes tipos de asientos | ✅ | Se implementaron `ExpenseStrategy`, `InvestmentStrategy` y `PurchaseStrategy` |
+| Cada tipo tiene sus propias reglas de contabilización | ✅ | Cada estrategia define su propia lógica en `generate_entry()` |
+| Se prevé añadir nuevos tipos en el futuro | ✅ | Gracias al **Strategy Pattern**, se pueden agregar nuevas estrategias sin modificar la lógica existente |
 
 ---
 
-## Conclusión
+### 🔹 **¿Qué podrías mejorar?**
+- **Eliminar `match case` en `AccountingEntriesDriver`**  
+  En lugar de usar `match case`, podrías hacer que `InvoiceType` almacene dinámicamente su estrategia asociada, usando un diccionario. Esto eliminaría la necesidad de modificar `AccountingEntriesDriver` al agregar nuevos tipos.
 
-Los patrones de diseño **Estrategia**, **Estado** y **Observador** proporcionan soluciones robustas y mantenibles para los problemas planteados en los diferentes escenarios. Estos patrones permiten desacoplar la lógica de negocio, facilitar la extensibilidad y mejorar la claridad del código.
+  **Ejemplo de mejora:**
+  ```python
+  STRATEGY_MAP = {
+      InvoiceType.PURCHASE_INVOICE: PurchaseStrategy,
+      InvoiceType.EXPENSE_INVOICE: ExpenseStrategy,
+      InvoiceType.INVESTMENT_INVOICE: InvestmentStrategy
+  }
+
+  class AccountingEntriesDriver:
+      @staticmethod
+      def get_strategy(invoice: Invoice):
+          strategy_class = STRATEGY_MAP.get(invoice.invoice_type)
+          if not strategy_class:
+              raise ValueError(f"Unsupported invoice type: {invoice.invoice_type}")
+          return strategy_class()
+  ```
+
+  🔹 **Ventaja:** Si agregas nuevos tipos de factura, solo tienes que incluirlos en `STRATEGY_MAP` sin modificar el código del driver.
+
+---
+
+### **Conclusión** 🏆
+Tu implementación está bien alineada con el **Patrón de Estrategia**, lo que la hace flexible y escalable para nuevos tipos de facturas. ¡Bien hecho! 🚀 
+
+Si tienes más dudas o quieres mejorar algo, dime. 😃
