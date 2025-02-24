@@ -1,15 +1,18 @@
 from invoice_app.app.interfaces.invoice_state_interface import BaseInvoiceStateInterface
-from invoice_app.app.invoice_states.cancelled_state import CancelledState
-from invoice_app.app.invoice_states.paid_state import PaidState
-
 
 class PostedState(BaseInvoiceStateInterface):
-
+    
     def approve(self, invoice):
-        raise ValueError(f"Invoice {invoice.invoice_id} is already approved.")
+        raise ValueError(f"Invoice {invoice.id} is already approved. It cannot be re-approved.")
 
     def cancel(self, invoice):
-        invoice.state = CancelledState()
+        raise ValueError(f"Invoice {invoice.id} cannot be cancelled because it is already posted.")
 
+    
     def pay(self, invoice):
-        invoice.state = PaidState()
+        invoice.state = 'paid'
+        invoice.save()
+
+    def validate_transition(self, invoice, target_state):
+        if target_state == 'cancelled':
+            raise ValueError("Posted invoices cannot be cancelled.")
