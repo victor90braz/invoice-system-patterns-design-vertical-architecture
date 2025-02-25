@@ -1,8 +1,8 @@
-from django.db.models.signals import post_save
-from django.dispatch import receiver
 from invoice_app.app.interfaces.invoice_state_interface import BaseInvoiceStateInterface
 from invoice_app.app.invoice_states.enums.invoice_state_enums import InvoiceStateEnum
 from invoice_app.models.invoice import Invoice
+from invoice_app.app.signals.signals import invoice_cancelled
+from invoice_app.models.invoice_state import InvoiceState
 
 class PaidState(BaseInvoiceStateInterface):
 
@@ -10,20 +10,19 @@ class PaidState(BaseInvoiceStateInterface):
         raise ValueError(f"Invoice {invoice.invoice_number} is already paid. It cannot be approved.")
 
     def cancel(self, invoice: Invoice):
-        raise ValueError(f"Invoice {invoice.invoice_number} cannot be cancelled because it is already paid.")
+        self.validate_transition(invoice, InvoiceStateEnum.CANCELLED)
+        invoice.state = InvoiceState.objects.get(code=InvoiceStateEnum.CANCELLED)
+        invoice.save()
+        self._send_invoice_cancelled_signal(invoice)
 
     def pay(self, invoice: Invoice):
         raise ValueError(f"Invoice {invoice.invoice_number} is already paid.")
 
     def validate_transition(self, invoice: Invoice, target_state: str):
-        pass
+        if target_state == InvoiceStateEnum.CANCELLED and invoice.total_value != 0:
+            raise ValueError("Cancelled invoices must have no outstanding balance.")
+        if target_state == InvoiceStateEnum.PAID and invoice.total_value <= 0:
+            raise ValueError("Invoice must have a positive total value to be paid.")
 
-    @receiver(post_save, sender=Invoice)
-    def handle_invoice_paid_state(sender, instance, created, **kwargs):
-        if instance.state.code == InvoiceStateEnum.PAID:
-
-            if not instance._state.adding:  
-                return
-            
-            instance.total_value = 0.0
-            instance.save()
+    def _send_invoice_cancelled_signal(self, invoice: Invoice):
+        invoice_cancelled.send(sender=self.__class__, invoice=invoice)
