@@ -1,6 +1,7 @@
 from invoice_app.app.interfaces.invoice_state_interface import BaseInvoiceStateInterface
 from invoice_app.models.invoice import Invoice
 from invoice_app.app.invoice_states.enums.invoice_state_enums import InvoiceStateEnum
+from invoice_app.app.signals.signals import invoice_cancelled
 
 class CancelledState(BaseInvoiceStateInterface):
 
@@ -16,3 +17,6 @@ class CancelledState(BaseInvoiceStateInterface):
     def validate_transition(self, invoice: Invoice, target_state: str):
         if target_state == InvoiceStateEnum.APPROVED:
             raise ValueError("Cancelled invoices cannot be re-approved.")
+
+    def send_invoice_cancelled_signal(self, invoice: Invoice):
+        invoice_cancelled.send(sender=self.__class__, invoice=invoice)
