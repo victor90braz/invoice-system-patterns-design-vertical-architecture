@@ -1,23 +1,20 @@
 from abc import ABC, abstractmethod
+from invoice_app.models.invoice import Invoice  # Importamos el modelo Invoice
 
 class BaseInvoiceStateInterface(ABC):
-    
+
     @abstractmethod
-    def approve(self, invoice):
-        """Approve the invoice if valid for approval"""
+    def approve(self, invoice: Invoice):
         pass
 
     @abstractmethod
-    def cancel(self, invoice):
-        """Cancel the invoice if valid for cancellation"""
+    def cancel(self, invoice: Invoice):
         pass
 
     @abstractmethod
-    def pay(self, invoice):
-        """Pay the invoice if valid for payment"""
+    def pay(self, invoice: Invoice):
         pass
 
     @abstractmethod
-    def validate_transition(self, invoice, target_state):
-        """Validates if the transition to a given target state is allowed"""
+    def validate_transition(self, invoice: Invoice, target_state: str):
         pass
