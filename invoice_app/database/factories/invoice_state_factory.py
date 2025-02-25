@@ -1,14 +1,11 @@
 import factory
 from invoice_app.models import InvoiceState
+from invoice_app.app.invoice_states.enums.invoice_state_enums import InvoiceStateEnum
 
 class InvoiceStateFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = InvoiceState
 
-    name = factory.Faker('word')
     code = factory.Faker('word')
     description = factory.Faker('sentence')
-    
-    @classmethod
-    def create_state(cls, name, code, description, **kwargs):
-        return cls.create(name=name, code=code, description=description, **kwargs)
+
