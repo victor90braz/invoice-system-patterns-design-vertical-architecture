@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from invoice_app.models.invoice import Invoice  # Importamos el modelo Invoice
+from invoice_app.models.invoice import Invoice  
 
 class BaseInvoiceStateInterface(ABC):
 
