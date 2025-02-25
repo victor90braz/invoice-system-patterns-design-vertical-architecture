@@ -5,7 +5,7 @@ from decimal import Decimal
 
 class TaxPolicy(models.Model):
     product_type = models.CharField(max_length=50)
-    country = models.CharField(max_length=50)
+    country = models.CharField(max_length=100)  
     tax_regime = models.CharField(max_length=50)
     tax_rate = models.DecimalField(max_digits=5, decimal_places=2, validators=[MinValueValidator(0.00)])
 
