@@ -38,5 +38,5 @@ class InvoiceNotificationActions:
         for observer in self.observers:
             try:
                 observer.update(invoice)
-            except Exception as e:
-                logger.error(f"Observer {observer.__class__.__name__} failed: {e}")
+            except Exception as error:
+                logger.error(f"Observer {observer.__class__.__name__} failed: {error}")
