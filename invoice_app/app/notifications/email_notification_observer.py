@@ -2,8 +2,10 @@ from django.core.mail import send_mail
 from django.conf import settings
 import logging
 
+from invoice_app.models.invoice import Invoice
+
 class EmailNotificationObserver:
-    def update(self, invoice):
+    def update(self, invoice: Invoice):
 
         if invoice.supplier.email:
             try:
