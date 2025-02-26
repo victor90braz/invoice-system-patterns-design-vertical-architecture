@@ -95,3 +95,39 @@ class InvoiceNotificationTest(TestCase):
 
         # Assert: Ensure send_mail was not called when there is no email
         mock_send_mail.assert_not_called()
+
+
+    @patch("invoice_app.app.notifications.email_notification_observer.logging.info")
+    def test_email_notification_observer_logs_info_when_email_sent(self, mock_logging_info):
+        # Arrange
+        supplier = SupplierFactory.create(email="supplier@example.com")
+        invoice = InvoiceFactory.create(supplier=supplier)
+        observer = EmailNotificationObserver()
+
+        # Act
+        observer.update(invoice)
+
+        # Assert: Ensure logging.info was called at least once with the expected log message
+        mock_logging_info.assert_any_call(
+            f"Email sent to {invoice.supplier.email} for invoice {invoice.invoice_number}."
+        )
+
+        # Check if it was called exactly once or handle the case where it is called more than once
+        self.assertGreaterEqual(mock_logging_info.call_count, 1)
+
+
+    @patch("invoice_app.app.notifications.email_notification_observer.logging.error")
+    def test_email_notification_observer_logs_error_when_email_fails(self, mock_logging_error):
+        # Arrange
+        supplier = SupplierFactory.create(email="supplier@example.com")
+        invoice = InvoiceFactory.create(supplier=supplier)
+        observer = EmailNotificationObserver()
+
+        # Simulate failure in sending the email
+        with patch("invoice_app.app.notifications.email_notification_observer.send_mail", side_effect=Exception("Some error")):
+            observer.update(invoice)
+
+        # Assert: Ensure logging.error was called with the expected log message
+        mock_logging_error.assert_called_once_with(
+            f"Failed to send email for invoice {invoice.invoice_number}: Some error"
+        )
