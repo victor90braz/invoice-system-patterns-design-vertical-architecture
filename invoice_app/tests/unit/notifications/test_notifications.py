@@ -13,19 +13,23 @@ from invoice_app.models.invoice import Invoice
 
 class InvoiceNotificationTest(TestCase):
 
-    def setUp(self):
-        # Arrange
+    @patch.object(InvoiceNotificationActions, "resolve_observers")  
+    def setUp(self, mock_resolve_observers):
         self.invoice = InvoiceFactory.create()
+
         self.accounting_observer = MagicMock(spec=AccountingEntriesObserver)
         self.audit_observer = MagicMock(spec=AuditLogObserver)
         self.treasury_observer = MagicMock(spec=TreasuryObserver)
         self.email_notification_observer = MagicMock(spec=EmailNotificationObserver)
 
+        mock_resolve_observers.return_value = [
+            self.accounting_observer,
+            self.audit_observer,
+            self.treasury_observer,
+            self.email_notification_observer,
+        ]
+
         self.invoice_notification_actions = InvoiceNotificationActions()
-        self.invoice_notification_actions.add_observer(self.accounting_observer)
-        self.invoice_notification_actions.add_observer(self.audit_observer)
-        self.invoice_notification_actions.add_observer(self.treasury_observer)
-        self.invoice_notification_actions.add_observer(self.email_notification_observer)
 
         post_save.connect(invoicePostSaveNotifier, sender=Invoice)
 
@@ -42,7 +46,7 @@ class InvoiceNotificationTest(TestCase):
         self.treasury_observer.update.assert_called_once_with(self.invoice)
         self.email_notification_observer.update.assert_called_once_with(self.invoice)
 
-    @patch.object(InvoiceNotificationActions, 'process_invoice')
+    @patch.object(InvoiceNotificationActions, "process_invoice")  
     def test_post_save_signal_triggers_invoice_notification_actions(self, mock_process):
         # Act
         self.invoice.save()

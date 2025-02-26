@@ -20,12 +20,6 @@ def handle_invoice_cancelled(sender, invoice, **kwargs):
 
 @receiver(post_save, sender=Invoice)
 def invoicePostSaveNotifier(sender, instance, **kwargs):
-    observer = EmailNotificationObserver()
-    observer.update(instance)
-
-    processor = InvoiceNotificationActions()
-    processor.add_observer(AccountingEntriesObserver())
-    processor.add_observer(TreasuryObserver())
-    processor.add_observer(AuditLogObserver())
+    processor = InvoiceNotificationActions()  
     processor.process_invoice(instance)
 
