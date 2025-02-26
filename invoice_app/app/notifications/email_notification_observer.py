@@ -10,8 +10,8 @@ class EmailNotificationObserver:
         if invoice.supplier.email:
             try:
                 send_mail(
-                    subject=f"Invoice #{invoice.id} Generated",
-                    message=f"Hello, your invoice with ID {invoice.id} has been generated.",
+                    subject=f"Invoice #{invoice.invoice_number} Generated",
+                    message=f"Hello, your invoice number {invoice.invoice_number} has been generated.",
                     from_email=settings.DEFAULT_FROM_EMAIL,
                     recipient_list=[invoice.supplier.email],
                 )

@@ -9,7 +9,9 @@ from invoice_app.app.notifications.email_notification_observer import EmailNotif
 from invoice_app.app.signals.signals import invoicePostSaveNotifier
 from invoice_app.app.notifications.treasury_observer import TreasuryObserver
 from invoice_app.database.factories.invoice_factory import InvoiceFactory
+from invoice_app.database.factories.supplier_factory import SupplierFactory
 from invoice_app.models.invoice import Invoice
+from invoice_system import settings
 
 class InvoiceNotificationTest(TestCase):
 
@@ -53,3 +55,43 @@ class InvoiceNotificationTest(TestCase):
 
         # Assert
         mock_process.assert_called_once_with(self.invoice)
+
+
+    @patch("invoice_app.app.notifications.email_notification_observer.send_mail")
+    def test_email_notification_observer_sends_email(self, mock_send_mail):
+        # Arrange
+        supplier = SupplierFactory.create(email="supplier@example.com")
+
+        # Build the invoice without saving it
+        invoice = InvoiceFactory.build(supplier=supplier)
+
+        observer = EmailNotificationObserver()
+
+        # Act
+        observer.update(invoice)
+
+        # Assert: Ensure send_mail was called once with the expected arguments
+        mock_send_mail.assert_called_once_with(
+            subject=f"Invoice #{invoice.invoice_number} Generated", 
+            message=f"Hello, your invoice number {invoice.invoice_number} has been generated.",  
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[invoice.supplier.email],
+        )
+
+
+    @patch("invoice_app.app.notifications.email_notification_observer.send_mail")
+    def test_email_notification_observer_does_not_send_email_without_email(self, mock_send_mail):
+        # Arrange
+        supplier = SupplierFactory.create(email=None)
+
+        # Create the invoice and link it to the supplier created above
+        invoice = InvoiceFactory.create(supplier=supplier)
+
+        # Instantiate the observer
+        observer = EmailNotificationObserver()
+
+        # Act
+        observer.update(invoice)
+
+        # Assert: Ensure send_mail was not called when there is no email
+        mock_send_mail.assert_not_called()
