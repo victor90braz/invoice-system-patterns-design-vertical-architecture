@@ -16,5 +16,5 @@ class EmailNotificationObserver:
                     recipient_list=[invoice.supplier.email],
                 )
                 logging.info(f"Email sent to {invoice.supplier.email} for invoice {invoice.id}.")
-            except Exception as e:
-                logging.error(f"Failed to send email for invoice {invoice.id}: {e}")
+            except Exception as error:
+                logging.error(f"Failed to send email for invoice {invoice.id}: {error}")
