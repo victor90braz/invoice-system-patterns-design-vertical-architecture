@@ -6,11 +6,10 @@ from invoice_app.app.notifications.accounting_entries_observer import Accounting
 from invoice_app.app.notifications.actions.invoice_notification_actions import InvoiceNotificationActions
 from invoice_app.app.notifications.audit_log_observer import AuditLogObserver
 from invoice_app.app.notifications.email_notification_observer import EmailNotificationObserver
-from invoice_app.app.notifications.invoice_signals import InvoicePostSaveNotifier
+from invoice_app.app.signals.signals import invoicePostSaveNotifier
 from invoice_app.app.notifications.treasury_observer import TreasuryObserver
 from invoice_app.database.factories.invoice_factory import InvoiceFactory
 from invoice_app.models.invoice import Invoice
-from invoice_system import settings
 
 class InvoiceNotificationTest(TestCase):
 
@@ -28,10 +27,10 @@ class InvoiceNotificationTest(TestCase):
         self.invoice_notification_actions.add_observer(self.treasury_observer)
         self.invoice_notification_actions.add_observer(self.email_notification_observer)
 
-        post_save.connect(InvoicePostSaveNotifier.notify, sender=Invoice)
+        post_save.connect(invoicePostSaveNotifier, sender=Invoice)
 
     def tearDown(self):
-        post_save.disconnect(InvoicePostSaveNotifier.notify, sender=Invoice)
+        post_save.disconnect(invoicePostSaveNotifier, sender=Invoice)
 
     def test_invoice_notification_actions_notifies_observers(self):
         # Act
