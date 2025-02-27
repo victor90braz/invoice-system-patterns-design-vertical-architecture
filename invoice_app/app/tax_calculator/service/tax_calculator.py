@@ -12,6 +12,7 @@ class TaxCalculator:
 
     @staticmethod
     def get_applicable_policies(invoice: Invoice):
+        
         return TaxPolicy.objects.filter(
             supplier=invoice.supplier
         ).filter(
@@ -22,6 +23,7 @@ class TaxCalculator:
 
     @staticmethod
     def calculate_total_tax(invoice: Invoice):
+
         applicable_policies = TaxCalculator.get_applicable_policies(invoice)
         total_tax = Decimal("0.00")
 
@@ -33,7 +35,7 @@ class TaxCalculator:
 
     @staticmethod
     def apply_tax_policy(policy: TaxPolicy, amount: Decimal) -> Decimal:
-        
+
         match str(policy.rate):  
             case TaxRate.STANDARD_IVA.value:
                 return StandardIVATax().calculate_tax(amount)
