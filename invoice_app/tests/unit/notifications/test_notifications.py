@@ -13,9 +13,10 @@ from invoice_app.database.factories.supplier_factory import SupplierFactory
 from invoice_app.models.invoice import Invoice
 from invoice_system import settings
 
+
 class InvoiceNotificationTest(TestCase):
 
-    @patch.object(InvoiceNotificationActions, "resolve_observers")  
+    @patch.object(InvoiceNotificationActions, "resolve_observers")
     def setUp(self, mock_resolve_observers):
         self.invoice = InvoiceFactory.create()
 
@@ -48,7 +49,7 @@ class InvoiceNotificationTest(TestCase):
         self.treasury_observer.update.assert_called_once_with(self.invoice)
         self.email_notification_observer.update.assert_called_once_with(self.invoice)
 
-    @patch.object(InvoiceNotificationActions, "process_invoice")  
+    @patch.object(InvoiceNotificationActions, "process_invoice")
     def test_post_save_signal_triggers_invoice_notification_actions(self, mock_process):
         # Act
         self.invoice.save()
@@ -56,46 +57,36 @@ class InvoiceNotificationTest(TestCase):
         # Assert
         mock_process.assert_called_once_with(self.invoice)
 
-
     @patch("invoice_app.app.notifications.email_notification_observer.send_mail")
     def test_email_notification_observer_sends_email(self, mock_send_mail):
         # Arrange
         supplier = SupplierFactory.create(email="supplier@example.com")
-
-        # Build the invoice without saving it
         invoice = InvoiceFactory.build(supplier=supplier)
-
         observer = EmailNotificationObserver()
 
         # Act
         observer.update(invoice)
 
-        # Assert: Ensure send_mail was called once with the expected arguments
+        # Assert
         mock_send_mail.assert_called_once_with(
-            subject=f"Invoice #{invoice.invoice_number} Generated", 
-            message=f"Hello, your invoice number {invoice.invoice_number} has been generated.",  
+            subject=f"Invoice #{invoice.invoice_number} Generated",
+            message=f"Hello, your invoice number {invoice.invoice_number} has been generated.",
             from_email=settings.DEFAULT_FROM_EMAIL,
             recipient_list=[invoice.supplier.email],
         )
-
 
     @patch("invoice_app.app.notifications.email_notification_observer.send_mail")
     def test_email_notification_observer_does_not_send_email_without_email(self, mock_send_mail):
         # Arrange
         supplier = SupplierFactory.create(email=None)
-
-        # Create the invoice and link it to the supplier created above
         invoice = InvoiceFactory.create(supplier=supplier)
-
-        # Instantiate the observer
         observer = EmailNotificationObserver()
 
         # Act
         observer.update(invoice)
 
-        # Assert: Ensure send_mail was not called when there is no email
+        # Assert
         mock_send_mail.assert_not_called()
-
 
     @patch("invoice_app.app.notifications.email_notification_observer.logging.info")
     def test_email_notification_observer_logs_info_when_email_sent(self, mock_logging_info):
@@ -107,14 +98,11 @@ class InvoiceNotificationTest(TestCase):
         # Act
         observer.update(invoice)
 
-        # Assert: Ensure logging.info was called at least once with the expected log message
+        # Assert
         mock_logging_info.assert_any_call(
             f"Email sent to {invoice.supplier.email} for invoice {invoice.invoice_number}."
         )
-
-        # Check if it was called exactly once or handle the case where it is called more than once
         self.assertGreaterEqual(mock_logging_info.call_count, 1)
-
 
     @patch("invoice_app.app.notifications.email_notification_observer.logging.error")
     def test_email_notification_observer_logs_error_when_email_fails(self, mock_logging_error):
@@ -123,11 +111,11 @@ class InvoiceNotificationTest(TestCase):
         invoice = InvoiceFactory.create(supplier=supplier)
         observer = EmailNotificationObserver()
 
-        # Simulate failure in sending the email
         with patch("invoice_app.app.notifications.email_notification_observer.send_mail", side_effect=Exception("Some error")):
+            # Act
             observer.update(invoice)
 
-        # Assert: Ensure logging.error was called with the expected log message
+        # Assert
         mock_logging_error.assert_called_once_with(
             f"Failed to send email for invoice {invoice.invoice_number}: Some error"
         )

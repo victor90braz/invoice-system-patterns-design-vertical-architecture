@@ -1,3 +1,5 @@
+from decimal import Decimal
+import random
 import factory
 from invoice_app.models.tax_policy import TaxPolicy
 
@@ -5,6 +7,8 @@ class TaxPolicyFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = TaxPolicy
 
-    rate = factory.Faker("pydecimal", left_digits=2, right_digits=2, positive=True, min_value=0.01, max_value=25.00)
-    product_type = factory.Iterator(["electronics", "food", "clothing"])
-    tax_regime = factory.Faker("word", ext_word_list=["freelancer", "corporate", "government"])
+    rate = factory.LazyFunction(lambda: Decimal(random.choice(["21.00", "10.00", "15.00"])))
+    product_type = factory.Iterator(["electronics", "food", "clothing", "software", "books"])
+    tax_regime = factory.Iterator(["freelancer", "corporate", "government"])
+    country = factory.Iterator(["US", "CA", "GB", "DE", "FR"])  
+ 

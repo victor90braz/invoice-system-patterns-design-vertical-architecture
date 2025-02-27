@@ -3,7 +3,6 @@ from invoice_app.app.invoice_states.paid_state import PaidState
 from invoice_app.app.invoice_states.enums.invoice_state_enums import InvoiceStateEnum
 from invoice_app.database.factories.invoice_factory import InvoiceFactory
 from invoice_app.database.factories.invoice_state_factory import InvoiceStateFactory
-from invoice_app.models.invoice import Invoice
 
 class TestPaidState(TestCase):
 

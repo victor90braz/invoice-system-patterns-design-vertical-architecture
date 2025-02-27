@@ -4,20 +4,20 @@ from invoice_app.app.invoice_states.enums.invoice_state_enums import InvoiceStat
 from invoice_app.database.factories.invoice_factory import InvoiceFactory
 from invoice_app.database.factories.invoice_state_factory import InvoiceStateFactory
 
+
 class TestDraftStateApprove(TestCase):
 
     def setUp(self):
-        # Arrange: Create necessary InvoiceState objects for each test
         self.draft_state = InvoiceStateFactory.create(code=InvoiceStateEnum.DRAFT, description="Draft state")
         self.posted_state = InvoiceStateFactory.create(code=InvoiceStateEnum.POSTED, description="Posted state")
         self.cancelled_state = InvoiceStateFactory.create(code=InvoiceStateEnum.CANCELLED, description="Cancelled state")
 
     def test_approve_invoice_from_draft(self):
-        # Arrange: Create invoice in 'draft' state
+        # Arrange
         invoice = InvoiceFactory.create(invoice_number="001", total_value=100.0, state=self.draft_state)
+        draft = DraftState()
 
         # Act
-        draft = DraftState()
         draft.approve(invoice)
 
         # Assert
@@ -25,11 +25,11 @@ class TestDraftStateApprove(TestCase):
         self.assertEqual(invoice.state.code, InvoiceStateEnum.POSTED)
 
     def test_cancel_invoice_from_draft(self):
-        # Arrange: Create invoice in 'draft' state
+        # Arrange
         invoice = InvoiceFactory.create(invoice_number="002", total_value=0.0, state=self.draft_state)
+        draft = DraftState()
 
         # Act
-        draft = DraftState()
         draft.cancel(invoice)
 
         # Assert
@@ -37,11 +37,11 @@ class TestDraftStateApprove(TestCase):
         self.assertEqual(invoice.state.code, InvoiceStateEnum.CANCELLED)
 
     def test_validate_transition_from_draft_to_approved(self):
-        # Arrange: Create invoice in 'draft' state
+        # Arrange
         invoice = InvoiceFactory.create(invoice_number="003", total_value=100.0, state=self.draft_state)
+        draft = DraftState()
 
         # Act
-        draft = DraftState()
         draft.approve(invoice)
 
         # Assert
@@ -49,11 +49,11 @@ class TestDraftStateApprove(TestCase):
         self.assertEqual(invoice.state.code, InvoiceStateEnum.POSTED)
 
     def test_validate_transition_from_draft_to_cancelled(self):
-        # Arrange: Create invoice in 'draft' state
+        # Arrange
         invoice = InvoiceFactory.create(invoice_number="004", total_value=0.0, state=self.draft_state)
+        draft = DraftState()
 
         # Act
-        draft = DraftState()
         draft.cancel(invoice)
 
         # Assert
