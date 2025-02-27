@@ -1,5 +1,4 @@
 from decimal import Decimal
-
 from invoice_app.app.interfaces.tax_rule_interface import TaxRuleInterface
 
 

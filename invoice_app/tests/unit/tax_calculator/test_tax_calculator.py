@@ -9,69 +9,89 @@ from invoice_app.database.factories.tax_policy_factory import TaxPolicyFactory
 
 class TestTaxCalculator(TestCase):
     def test_calculate_total_tax_with_matching_policy(self):
-        # Arrange: Crear una política de impuestos
         tax_policy = TaxPolicyFactory.create(rate=Decimal("21.00"), product_type="electronics")
 
-        # Crear un proveedor
         supplier = SupplierFactory.create()
-        supplier.tax_policies.set([tax_policy])  # ✅ Asignamos tax_policies correctamente
+        supplier.tax_policies.set([tax_policy])
 
-        # Crear una factura de tipo "electronics"
         invoice = InvoiceFactory.create(
             total_value=Decimal("100.00"),
             invoice_type="electronics",
             supplier=supplier
         )
 
-        # Act: Calcular impuestos
         total_tax = TaxCalculator.calculate_total_tax(invoice)
 
-        # Assert
-        self.assertEqual(supplier.tax_policies.count(), 1)  # ✅ Validamos que el proveedor tiene 1 política
-        self.assertEqual(total_tax, Decimal("21.00"))  # ✅ (100 * 0.21 = 21)
+        self.assertEqual(supplier.tax_policies.count(), 1)
+        self.assertEqual(total_tax, Decimal("21.00"))
 
     def test_calculate_total_tax_with_multiple_policies(self):
-        # Arrange: Crear múltiples políticas de impuestos con valores correctos
         tax_policies = TaxPolicyFactory.create_batch(
             2, 
-            rate=factory.Iterator([Decimal("21.00"), Decimal("10.00")]),  # ✅ Asignamos tasas diferentes
+            rate=factory.Iterator([Decimal("21.00"), Decimal("10.00")]), 
             product_type="electronics", 
             tax_regime="freelancer"
         )
 
-        # Crear un proveedor
         supplier = SupplierFactory.create()
-        supplier.tax_policies.set(tax_policies)  # ✅ Asignamos tax_policies correctamente
+        supplier.tax_policies.set(tax_policies)
 
-        # Crear una factura de tipo "electronics"
         invoice = InvoiceFactory.create(
             total_value=Decimal("200.00"),
             invoice_type="electronics",
             supplier=supplier
         )
 
-        # Act: Calcular impuestos
         total_tax = TaxCalculator.calculate_total_tax(invoice)
 
-        # Assert
-        self.assertEqual(supplier.tax_policies.count(), 2)  # ✅ Validamos que tiene 2 políticas
-        self.assertEqual(total_tax, Decimal("62.00"))  # ✅ (200 * 0.21 + 200 * 0.10 = 62)
+        self.assertEqual(supplier.tax_policies.count(), 2)
+        self.assertEqual(total_tax, Decimal("62.00"))
 
     def test_calculate_total_tax_no_matching_policy(self):
-        # Arrange: Crear un proveedor sin políticas de impuestos
         supplier = SupplierFactory.create()
-        supplier.tax_policies.clear()  # ✅ Aseguramos que no tenga políticas asignadas
+        supplier.tax_policies.clear()
 
-        # Crear una factura con tipo de producto sin políticas
         invoice = InvoiceFactory.create(
             total_value=Decimal("150.00"),
-            invoice_type="clothing",  # ✅ No hay política de impuestos para "clothing"
+            invoice_type="clothing",
             supplier=supplier
         )
 
-        # Act: Calcular impuestos
         total_tax = TaxCalculator.calculate_total_tax(invoice)
 
-        # Assert
-        self.assertEqual(supplier.tax_policies.count(), 0)  # ✅ Validamos que no tiene tax policies
-        self.assertEqual(total_tax, Decimal("0.00"))  # ✅ Si no hay políticas, el impuesto debe ser 0
+        self.assertEqual(supplier.tax_policies.count(), 0)
+        self.assertEqual(total_tax, Decimal("0.00"))
+
+    def test_calculate_total_tax_with_custom_tax_rate(self):
+        tax_policy = TaxPolicyFactory.create(rate=Decimal("15.00"), product_type="software")
+
+        supplier = SupplierFactory.create()
+        supplier.tax_policies.set([tax_policy])
+
+        invoice = InvoiceFactory.create(
+            total_value=Decimal("100.00"),
+            invoice_type="software",
+            supplier=supplier
+        )
+
+        total_tax = TaxCalculator.calculate_total_tax(invoice)
+
+        self.assertEqual(supplier.tax_policies.count(), 1)
+        self.assertEqual(total_tax, Decimal("15.00"))  # 100 * 0.15 = 15
+
+    def test_calculate_total_tax_with_zero_tax_policy(self):
+        tax_policy = TaxPolicyFactory.create(rate=Decimal("0.00"), product_type="books")
+
+        supplier = SupplierFactory.create()
+        supplier.tax_policies.set([tax_policy])
+
+        invoice = InvoiceFactory.create(
+            total_value=Decimal("200.00"),
+            invoice_type="books",
+            supplier=supplier
+        )
+
+        total_tax = TaxCalculator.calculate_total_tax(invoice)
+
+        self.assertEqual(supplier.tax_policies.count(), 1)
+        self.assertEqual(total_tax, Decimal("0.00"))
