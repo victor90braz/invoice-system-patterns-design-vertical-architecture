@@ -1,3 +1,4 @@
+from invoice_app.app.tax_calculator.enums.tax_rate_enums import TaxRate
 from invoice_app.app.tax_calculator.reduced_iva_tax import ReducedIVATax
 from invoice_app.app.tax_calculator.standard_iva_tax import StandardIVATax
 from invoice_app.app.tax_calculator.zero_iva_tax import ZeroIVATax
@@ -29,11 +30,11 @@ class TaxCalculator:
 
     @staticmethod
     def apply_tax_policy(policy: TaxPolicy, amount: Decimal) -> Decimal:
-        if policy.rate == Decimal("21.00"):
+        if policy.rate == Decimal(TaxRate.STANDARD_IVA):
             return StandardIVATax().calculate_tax(amount)
-        elif policy.rate == Decimal("10.00"):
+        elif policy.rate == Decimal(TaxRate.REDUCED_IVA):
             return ReducedIVATax().calculate_tax(amount)
-        elif policy.rate == Decimal("0.00"):
+        elif policy.rate == Decimal(TaxRate.ZERO_IVA):
             return ZeroIVATax().calculate_tax(amount)
         else:
             return amount * (policy.rate / Decimal("100.00"))
