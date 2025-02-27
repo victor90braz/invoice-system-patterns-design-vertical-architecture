@@ -33,6 +33,7 @@ class TaxCalculator:
 
     @staticmethod
     def apply_tax_policy(policy: TaxPolicy, amount: Decimal) -> Decimal:
+        
         match str(policy.rate):  
             case TaxRate.STANDARD_IVA.value:
                 return StandardIVATax().calculate_tax(amount)
