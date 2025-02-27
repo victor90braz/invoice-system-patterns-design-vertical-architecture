@@ -16,7 +16,7 @@ class TestAccountingStrategies(TestCase):
     def test_purchase_invoice_generates_purchase_entry(self):
         # Arrange
         tax_policy = TaxPolicyFactory.create()
-        supplier = SupplierFactory.create(tax_policy=tax_policy)
+        supplier = SupplierFactory.create(tax_policies=[tax_policy])  # ✅ Corrección aquí
         invoice = InvoiceFactory.create(
             invoice_number="003",
             total_value=500.0,
@@ -37,7 +37,7 @@ class TestAccountingStrategies(TestCase):
     def test_expense_invoice_generates_expense_entry(self):
         # Arrange
         tax_policy = TaxPolicyFactory.create()
-        supplier = SupplierFactory.create(tax_policy=tax_policy)
+        supplier = SupplierFactory.create(tax_policies=[tax_policy])  # ✅ Corrección aquí
         invoice = InvoiceFactory.create(
             invoice_number="002",
             total_value=300.0,
@@ -58,7 +58,7 @@ class TestAccountingStrategies(TestCase):
     def test_investment_invoice_generates_investment_entry(self):
         # Arrange
         tax_policy = TaxPolicyFactory.create()
-        supplier = SupplierFactory.create(tax_policy=tax_policy)
+        supplier = SupplierFactory.create(tax_policies=[tax_policy])  # ✅ Corrección aquí
         invoice = InvoiceFactory.create(
             invoice_number="004",
             total_value=1500.0,
@@ -78,7 +78,7 @@ class TestAccountingStrategies(TestCase):
 
     def test_unsupported_invoice_type_raises_error(self):
         tax_policy = TaxPolicyFactory.create()
-        supplier = SupplierFactory.create(tax_policy=tax_policy)
+        supplier = SupplierFactory.create(tax_policies=[tax_policy])  # ✅ Corrección aquí
         invoice = InvoiceFactory.create(
             invoice_number="005",
             total_value=200.0,

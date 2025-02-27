@@ -12,7 +12,7 @@ class InvoiceFactory(factory.django.DjangoModelFactory):
     total_value = factory.Faker("pydecimal", left_digits=5, right_digits=2, positive=True)
     invoice_type = factory.Iterator([InvoiceType.EXPENSE_INVOICE.value, InvoiceType.PURCHASE_INVOICE.value])
     supplier = factory.SubFactory(SupplierFactory)
-    state = factory.SubFactory(InvoiceStateFactory) 
+    state = factory.SubFactory(InvoiceStateFactory)
 
     @classmethod
     def add_invoice_type(cls, invoice_type: InvoiceType, **kwargs):
