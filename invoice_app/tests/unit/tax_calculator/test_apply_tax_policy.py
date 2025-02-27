@@ -5,9 +5,28 @@ from invoice_app.app.tax_calculator.service.tax_calculator import TaxCalculator
 from invoice_app.app.tax_calculator.standard_iva_tax import StandardIVATax
 from invoice_app.app.tax_calculator.zero_iva_tax import ZeroIVATax
 from invoice_app.database.factories.tax_policy_factory import TaxPolicyFactory
+from invoice_app.app.tax_calculator.service.composite_tax_rule import CompositeTaxRule
 
+class TestCompositeTaxRule(TestCase):
+    def test_apply_multiple_tax_rules(self):
+        amount = Decimal("100.00")
 
-class TestApplyTaxPolicy(TestCase):
+        # Create the tax rules
+        standard_tax = StandardIVATax()
+        reduced_tax = ReducedIVATax()
+        zero_tax = ZeroIVATax()
+
+        # Add the tax rules to the composite rule
+        CompositeTaxRule.add_rule(standard_tax)
+        CompositeTaxRule.add_rule(reduced_tax)
+        CompositeTaxRule.add_rule(zero_tax)
+
+        # Calculate the total tax
+        total_tax = CompositeTaxRule.calculate_total_tax(amount)
+
+        # Verify the total tax
+        self.assertEqual(total_tax, Decimal("31.00"))  # 100 * 0.21 (standard) + 100 * 0.10 (reduced) + 0 (zero)
+    
     def test_apply_standard_iva_tax(self):
         policy = TaxPolicyFactory.create(rate=Decimal("21.00"))
         amount = Decimal("100.00")
@@ -15,7 +34,7 @@ class TestApplyTaxPolicy(TestCase):
         tax = TaxCalculator.apply_tax_policy(policy, amount)
 
         self.assertIsInstance(StandardIVATax(), StandardIVATax)
-        self.assertEqual(tax, Decimal("21.00"))  # 100 * 0.21
+        self.assertEqual(tax, Decimal("21.00"))
 
     def test_apply_reduced_iva_tax(self):
         policy = TaxPolicyFactory.create(rate=Decimal("10.00"))
@@ -24,7 +43,7 @@ class TestApplyTaxPolicy(TestCase):
         tax = TaxCalculator.apply_tax_policy(policy, amount)
 
         self.assertIsInstance(ReducedIVATax(), ReducedIVATax)
-        self.assertEqual(tax, Decimal("20.00"))  # 200 * 0.10
+        self.assertEqual(tax, Decimal("20.00"))
 
     def test_apply_zero_iva_tax(self):
         policy = TaxPolicyFactory.create(rate=Decimal("0.00"))
@@ -33,7 +52,7 @@ class TestApplyTaxPolicy(TestCase):
         tax = TaxCalculator.apply_tax_policy(policy, amount)
 
         self.assertIsInstance(ZeroIVATax(), ZeroIVATax)
-        self.assertEqual(tax, Decimal("0.00"))  # 150 * 0
+        self.assertEqual(tax, Decimal("0.00"))
 
     def test_apply_custom_tax_rate(self):
         policy = TaxPolicyFactory.create(rate=Decimal("15.00"))
@@ -41,4 +60,4 @@ class TestApplyTaxPolicy(TestCase):
 
         tax = TaxCalculator.apply_tax_policy(policy, amount)
 
-        self.assertEqual(tax, Decimal("15.00"))  # 100 * 0.15
+        self.assertEqual(tax, Decimal("15.00"))
