@@ -1,7 +1,8 @@
 from decimal import Decimal
+from invoice_app.app.tax_calculator.enums.tax_constants import TaxConstants
+from invoice_app.app.tax_calculator.enums.tax_rate_enums import TaxRate
 from invoice_app.app.interfaces.tax_rule_interface import TaxRuleInterface
-
 
 class ZeroIVATax(TaxRuleInterface):
     def calculate_tax(self, amount: Decimal) -> Decimal:
-        return Decimal("0.00")  # Exento de IVA
+        return amount * (Decimal(TaxRate.ZERO_IVA.value) / Decimal(TaxConstants.PERCENTAGE_DIVISOR.value))

@@ -1,3 +1,4 @@
+from invoice_app.app.tax_calculator.enums.tax_constants import TaxConstants
 from invoice_app.app.tax_calculator.enums.tax_rate_enums import TaxRate
 from invoice_app.app.tax_calculator.reduced_iva_tax import ReducedIVATax
 from invoice_app.app.tax_calculator.standard_iva_tax import StandardIVATax
@@ -12,7 +13,7 @@ class TaxCalculator:
 
     @staticmethod
     def get_applicable_policies(invoice: Invoice):
-        
+
         return TaxPolicy.objects.filter(
             supplier=invoice.supplier
         ).filter(
@@ -44,7 +45,7 @@ class TaxCalculator:
             case TaxRate.ZERO_IVA.value:
                 return ZeroIVATax().calculate_tax(amount)
             case _:
-                return amount * (Decimal(policy.rate) / Decimal("100"))
+                return amount * (Decimal(policy.rate) / Decimal(TaxConstants.PERCENTAGE_DIVISOR.value))
 
 
 
