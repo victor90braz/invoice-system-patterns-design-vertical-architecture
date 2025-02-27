@@ -9,6 +9,7 @@ from django.db import models
 
 
 class TaxCalculator:
+
     @staticmethod
     def get_applicable_policies(invoice: Invoice):
         return TaxPolicy.objects.filter(
@@ -17,6 +18,7 @@ class TaxCalculator:
             models.Q(product_type=invoice.invoice_type) |
             models.Q(tax_regime__in=invoice.supplier.tax_policies.values_list("tax_regime", flat=True))
         )
+    
 
     @staticmethod
     def calculate_total_tax(invoice: Invoice):
@@ -28,13 +30,18 @@ class TaxCalculator:
 
         return total_tax
 
+
     @staticmethod
     def apply_tax_policy(policy: TaxPolicy, amount: Decimal) -> Decimal:
-        if policy.rate == Decimal(TaxRate.STANDARD_IVA):
-            return StandardIVATax().calculate_tax(amount)
-        elif policy.rate == Decimal(TaxRate.REDUCED_IVA):
-            return ReducedIVATax().calculate_tax(amount)
-        elif policy.rate == Decimal(TaxRate.ZERO_IVA):
-            return ZeroIVATax().calculate_tax(amount)
-        else:
-            return amount * (policy.rate / Decimal("100.00"))
+        match str(policy.rate):  
+            case TaxRate.STANDARD_IVA.value:
+                return StandardIVATax().calculate_tax(amount)
+            case TaxRate.REDUCED_IVA.value:
+                return ReducedIVATax().calculate_tax(amount)
+            case TaxRate.ZERO_IVA.value:
+                return ZeroIVATax().calculate_tax(amount)
+            case _:
+                return amount * (Decimal(policy.rate) / Decimal("100"))
+
+
+
